@@ -1,0 +1,553 @@
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    background: #171717;
+    display: flex;
+    height: 100vh;
+    color: white;
+  }
+
+  /* --- SIDEBAR --- */
+  .sidebar {
+    width: 220px;
+    background: #0b0b0e;
+    color: white;
+    height: 100vh;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+  }
+
+  .sidebar.collapsed {
+    width: 60px;
+  }
+
+  .sidebar-header {
+    font-size: 18px;
+    padding: 6px;
+    color: white;
+    border-bottom: 1px solid #3f4046;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .nav-item:hover {
+    background: #35c75a;
+  }
+
+  .nav-icon {
+    font-size: 24px;
+    margin-right: 15px;
+  }
+
+  .nav-label {
+    white-space: nowrap;
+    transition: opacity 0.3s;
+  }
+
+  .sidebar.collapsed .nav-label {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .nav-link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .toggle-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    padding: 15px;
+    cursor: pointer;
+  }
+
+  /* --- MAIN CONTENT --- */
+  .main-container {
+    margin-left: 220px;
+    flex-grow: 1;
+    padding: 20px;
+    color: white;
+    transition: margin-left 0.3s ease;
+  }
+
+  .sidebar.collapsed ~ .main-container {
+    margin-left: 60px;
+  }
+
+  /* --- SEARCH --- */
+  .search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .search {
+    width: 350px;
+    height: 30px;
+    border-radius: 12px;
+    border: none;
+    padding-left: 10px;
+    font-size: 14px;
+    background: #2c2c2c;
+    color: white;
+    outline: none;
+  }
+
+  .search-btn {
+  --button-color: rgb(3, 224, 77);
+      padding: 10px  30px;
+      font-size: 15.5px;
+      border-radius: 10px;
+      background-color: transparent;
+      border: 1px solid var(--button-color);
+      color: #6b6767;
+      cursor: pointer;
+      width: fit-content;
+      justify-content: center;
+      text-transform: uppercase;
+  }
+
+  .search-btn:hover {
+    background-color: #02a752;
+  }
+
+    
+
+
+  .button-invite {
+    margin-left: 980px;
+  --button-color: rgb(252, 50, 0);
+      padding: 10px  30px;
+      font-size: 15.5px;
+      border-radius: 10px;
+      background-color: transparent;
+      border: 1px solid var(--button-color);
+      color: #6b6767;
+      cursor: pointer;
+      width: fit-content;
+      justify-content: center;
+      text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .button-invite:hover {
+    background-color: #ff7300;
+  }
+  /* --- CONTROLS --- */
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .button-file,
+  .upload-btn,
+  .dropbtn {
+    --button-color: rgb(250, 250, 250);
+      padding: 10px  30px;
+      font-size: 15.5px;
+      border-radius: 10px;
+      background-color: transparent;
+      border: 1px solid var(--button-color);
+      color: #6b6767;
+      cursor: pointer;
+      width: fit-content;
+      justify-content: center;
+      text-transform: uppercase;
+  }
+
+  .button-file:hover,
+  .upload-btn:hover,
+  .dropbtn:hover {
+    background-color: #e0e0e0;
+  }
+
+  .upload-btn input {
+    display: none;
+  }
+
+  /* --- DROPDOWN --- */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #2c2c2c;
+    min-width: 200px;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.3);
+    border-radius: 6px;
+    z-index: 1;
+    margin-top: 5px;
+  }
+
+  .dropdown-content a,
+  .dropdown-content button {
+    color: white;
+    padding: 10px;
+    display: block;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  .dropdown-content a:hover,
+  .dropdown-content button:hover {
+    background-color: #3b3b3b;
+  }
+
+  /* --- MODAL FORMS --- */
+  #modalForm {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #2c2a2a;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    z-index: 1001;
+    width: 550px;
+    max-width: 90%;
+    color: #ffffff;
+  }
+
+  #filter {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+  }
+
+  .group {
+    margin-bottom: 13px;
+  }
+
+  .group input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    background: #424242;
+    color: white;
+    outline: none;
+  }
+
+  .group.buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  button {
+    background-color: #35c75a;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+  }
+
+  .ok-btn:hover {
+    background-color: #2d8758;
+  }
+
+  .cancel-btn {
+    background-color: #444;
+  }
+
+  .cancel-btn:hover {
+    background-color: #555;
+  }
+
+  /* --- FOLDER MODAL --- */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background-color: #2c2c2c;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 60%;
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+
+  .close:hover {
+    color: white;
+  }
+
+  .folder-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .folder-name-input {
+    flex-grow: 1;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #555;
+    background: #424242;
+    color: white;
+    outline: none;
+  }
+
+  .save-btn {
+    background-color: #36a368;
+    padding: 8px 16px;
+  }
+
+  .save-btn:hover {
+    background-color: #2d8758;
+  }
+
+  .folder-files-container {
+    margin-top: 20px;
+  }
+
+  .folder-files-list {
+    margin: 10px 0;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .folder-file-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background: #3b3b3b;
+    border-radius: 4px;
+    margin-bottom: 5px;
+  }
+
+  .file-delete-btn {
+    background: #ff4d4d;
+    border: none;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .file-delete-btn:hover {
+    background: #ff1a1a;
+  }
+
+  .folder-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+
+  .delete-btn {
+    background-color: #ff4d4d;
+  }
+
+  .delete-btn:hover {
+    background-color: #cc0000;
+  }
+
+  /* --- FOLDERS AND FILES --- */
+  .content {
+    background: #171717;
+    color: white;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .folder, .file {
+    background: #1e1e1e;
+    padding: 15px;
+    border-radius: 10px;
+  }
+
+  .folder h2, .file h2 {
+    font-size: 18px;
+    color: #cecece;
+    text-align: center;
+  }
+
+  .folder-item, .file-item {
+    padding: 8px;
+    margin: 5px 0;
+    background: #2c2c2c;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .folder-item:hover, .file-item:hover {
+    background: #3b3b3b;
+  }
+
+  /* --- DRAG AND DROP --- */
+  #drop-area {
+    border: 2px dashed #888;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    color: #ccc;
+    margin-bottom: 20px;
+  }
+
+  #drop-area.highlight {
+    border-color: rgb(25, 105, 25);
+    background-color: rgba(0,255,0,0.1);
+  }
+
+  /* --- THEME TOGGLE --- */
+  .theme-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: transparent;
+    color: white;
+    font-size: 1.2em;
+    border: none;
+    cursor: pointer;
+    z-index: 999;
+  }
+
+  /* --- PROFILE --- */
+  .profile-container {
+    background-color: #000000;
+    padding: 12px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 40px;
+    max-width: 300px;
+    margin-bottom: 20px;
+    position: fixed;
+    bottom: 30px;
+    right: 20px;
+  }
+
+  .avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-right: 10px;
+  }
+
+  .avatar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  #username {
+    font-size: 17px;
+  }
+  .controls button {
+    --button-color: rgb(250, 250, 250);
+      padding: 10px  30px;
+      font-size: 15.5px;
+      border-radius: 10px;
+      background-color: transparent;
+      border: 1px solid var(--button-color);
+      color: #6b6767;
+      cursor: pointer;
+      width: fit-content;
+      justify-content: center;
+      text-transform: uppercase;
+  }
+
+  .controls button:hover {
+    background-color: #ffffff;
+  }
+
+  .file-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .file-table thead {
+    background-color: #2b2b2b;
+  }
+
+  .file-table th,
+  .file-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #444;
+    text-align: left;
+  }
+
+  .file-table tr:hover {
+    background-color: #333;
+  }
+
+  .icon {
+    width: 20px;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+
+  .star {
+    cursor: pointer;
+    font-size: 18px;
+  }
+
+  

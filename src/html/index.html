@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>U Cloud</title>
+    <script src="libs/gsap/gsap.min.js" defer></script>
+
+    <script src="libs/swiper/swiper-bundle.min.js" defer ></script>
+    <link rel="stylesheet" href="libs/swiper/swiper-bundle.min.css" >
+
+
+    <link rel="stylesheet" href="../style/index.css">
+    <script src="../js/index.js" defer></script>
+
+
+    
+
+
+    <style>
+        .video-background {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            z-index: -1;
+            object-fit: cover;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;            background-color: #ffffff;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+
+
+<div class="swiper slider">
+
+
+
+
+    <div id="filter" onclick="show('none')"></div>
+    <div id="modalForm">
+        <form action="">
+            <h1>Registration</h1>
+            <div class="group">
+                <label for="username">User name</label>
+                <input type="text" id="username">
+            </div>
+            <div class="group">
+                <label for="email">Email</label>
+                <input type="email" id="email">
+            </div>
+            <div class="group">
+                <label for="password">Password</label>
+                <input type="password" id="password">
+            </div>
+            <div class="group">
+                <label for="confirm">Confirm password</label>
+                <input type="password" id="confirm">
+            </div>
+            <div class="group">
+                <center>
+                    <a href="cloud.html" target="_blank" class="btn-primary">Register</a>
+                </center>
+            </div>
+        </form>
+    </div>
+
+
+
+
+
+
+
+
+    <div class="swiper-wrapper">
+
+        <div class="swiper-slide slide">
+            <div class="slide__content">
+                <h2>U Cloud</h2>
+                <p>Зберігання вашої документації</p>
+                <button onclick="show('block')">Приеднатися до нас </button>
+            </div>
+        </div>
+        <div class="swiper-slide slide">
+            <div class="slide__content">
+                <h2>Швидкий доступ</h2>
+                <p>Доступ до ваших файлів у будь-який час, з будь-якого пристрою.</p>
+                <div class="pricing-table">
+  <div class="plan" onclick="selectPlan(this)">
+    <h2>Базовий</h2>
+    <p class="price">4,99 €</p>
+    <ul>
+      <li>Обсяг сховища: 100 ГБ</li>
+      <li> Підтримка форматів: PDF, DOCX, XLSX, PPTX, TXT</li>
+      <li>Пристрої: ПК, планшети, смартфони</li>
+      <li> Спільна робота: до 2 користувачів</li>
+      <li> Стандартне шифрування даних</li>
+      <li> Завантаження файлів: до 2 пристроїв</li>
+        <li> Автоматичне резервне копіювання: щодня</li>
+    </ul>
+  </div>
+
+  <div class="plan" onclick="selectPlan(this)">
+    <h2>Стандарт</h2>
+    <p class="price">7,49 €</p>
+    <ul>
+      <li> Обсяг сховища: 500 ГБ</li>
+      <li> Підтримка форматів: PDF, DOCX, XLSX, PPTX, TXT</li>
+      <li> Пристрої: ПК, планшети, смартфони</li>
+      <li> Спільна робота: до 4 користувачів</li>
+      <li> Розширене шифрування даних</li>
+      <li> Завантаження файлів: до 4 пристроїв</li>
+      <li> Автоматичне резервне копіювання: щодня</li>
+    </ul>
+  </div>
+
+  <div class="plan" onclick="selectPlan(this)">
+    <div class="label">Самый популярный</div>
+    <h2>Преміум</h2>
+    <p class="price">9,99 €</p>
+    <ul>
+      <li> Обсяг сховища: 1 ТБ</li>
+      <li> Підтримка форматів: PDF, DOCX, XLSX, PPTX, TXT</li>
+      <li> Пристрої:ПК, телефони, планшети</li>
+      <li> Спільна робота: до 6 користувачів</li>
+      <li> Преміум шифрування даних</li>
+      <li> Завантаження файлів: до 6 пристроїв</li>
+      <li> Автоматичне резервне копіювання: щодня</li>
+    </ul>
+  </div>
+</div>
+
+                <button onclick="show('block')">Приеднатися до нас</button>
+            </div>
+        </div>
+        <div class="swiper-slide slide">
+            <div class="slide__content">
+                <h2>Чому обирають нас?</h2>
+    <p>Наша мета — забезпечити кожного користувача швидким, безпечним і зручним доступом до своїх документів у будь-який час.</p>
+                <p>Ми пропонуємо просту та зручну платформу для зберігання ваших файлів, яка дозволяє вам зосередитися на важливих речах.</p>
+                <p>Наша команда завжди готова допомогти вам у будь-яких питаннях.</p>
+                <p>Надійність на першому місці</p> 
+                <p> Працюємо з будь-якої точки світу</p>
+                <p> Проста інтеграція з вашими системами</p>
+                <ul>
+    
+                <a href="information.html" target="_blank"> <button>Детальна інформація</button></a>
+                <a href="contact.html" target="_blank"> <button>КОНТАКТИ</button></a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="slider-buttom">
+        <div class="slider-pagination">
+            <div class ="swiper-pagination"></div>
+        </div>
+        <div class="slider-navigation">
+            <div class="swiper-button-next"></div>
+            <div class="swiper-button-prev"></div>
+        </div>
+    </div>
+
+    <video src="../media/1234.mp4" class="video-background" autoplay muted loop playsinline></video>
+
+
+
+
+
+
+</div>
+</body>
+</html>

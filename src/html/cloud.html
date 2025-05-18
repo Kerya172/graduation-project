@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../style/cloud.css">
+  <link rel="stylesheet" href="../style/light%20theme.css">
+  <script src="../js/cloud.js" defer></script>
+  <title>Файловый менеджер</title>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet">
+  
+
+</head>
+<body>
+
+<button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+
+<aside class="sidebar collapsed" id="sidebar">
+  <div class="sidebar-header">
+    U Cloud
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="nav-item">
+      <span class="material-symbols-rounded nav-icon">folder</span>
+      <span class="nav-label">Мои папки</span>
+    </div>
+    <div class="nav-item">
+      <span class="material-symbols-rounded nav-icon">insert_drive_file</span>
+      <span class="nav-label">Мои файлы</span>
+    </div>
+    <div class="nav-item">
+      <span class="material-symbols-rounded nav-icon">upload</span>
+      <span class="nav-label">Загрузить</span>
+    </div>
+    <div class="nav-item">
+      <a href="setting.html" target="_blank" class="nav-link">
+        <span class="material-symbols-rounded nav-icon">settings</span>
+        <span class="nav-label">Настройки</span>
+      </a>
+    </div>
+    <div class="nav-item">
+      <a href="index.html" class="nav-link">
+        <span class="material-symbols-rounded nav-icon">logout</span>
+        <span class="nav-label">Выход</span>
+      </a>
+    </div>
+  </div>
+</aside>
+
+<main class="main-container">
+  <!-- Блок профиля пользователя -->
+  <div class="profile-container">
+    <label for="avatar-upload">
+      <img src="https://placekitten.com/200/200" alt="Avatar" class="avatar" id="avatar" title="Нажмите, чтобы изменить фото">
+    </label>
+    <input type="file" id="avatar-upload" accept="image/*" style="display: none;">
+
+    <h1 id="username">—</h1>
+
+  </div>
+
+  
+  <form class="search-container">
+    <input type="text" name="text" class="search" placeholder="Search...">
+    <input type="submit" value="Search" class="search-btn">
+  </form>
+
+  <button class="button-invite" onclick="show('block')">Пригласить участника +</button>
+
+  <div id="filter" onclick="show('none')"></div>
+
+  <div id="modalForm">
+    <form onsubmit="sendInvite(event)">
+      <h2>Пригласите пользователей в свою рабочую группу</h2>
+      <p>Они получат доступ к папкам, которыми поделились с участниками рабочей группы. Права доступа можно настроить сразу или позже.</p>
+
+      <div class="group">
+        <label for="email">Email</label>
+        <input type="email" placeholder="Добавьте адрес эл. почты" id="email">
+      </div>
+
+      <div class="group">
+        <label for="text">Комментарий</label>
+        <input type="text" placeholder="Добавьте комментарий" id="text">
+      </div>
+
+      <div class="task-list">
+        <p><strong>Добавьте задания (необязательно)</strong></p>
+        <p>Помогите новым участникам рабочей группы с настройкой — предложите им выполнить эти действия.</p>
+
+        <label class="custom-checkbox">
+          <input type="checkbox" checked>
+          <span class="checkmark"></span>
+          Установить программу для компьютера
+        </label>
+        <label class="custom-checkbox">
+          <input type="checkbox" checked>
+          <span class="checkmark"></span>
+          Установить мобильное приложение
+        </label>
+      </div>
+
+      <div class="group buttons">
+        <button class="ok-btn" type="submit">Отправить приглашение</button>
+        <button type="button" class="cancel-btn" onclick="show('none')">Отмена</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Folder Modal -->
+  <div id="folderModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeFolderModal()">&times;</span>
+      <h2 id="folderModalTitle">Папка</h2>
+      <div class="folder-controls">
+        <input type="text" id="folderNameInput" class="folder-name-input">
+        <button onclick="updateFolderName()" class="save-btn">Сохранить</button>
+      </div>
+      <div class="folder-files-container">
+        <h3>Файлы в папке:</h3>
+        <div id="folderFilesList" class="folder-files-list"></div>
+        <div class="folder-actions">
+          <label class="upload-btn">
+            Добавить файл
+            <input type="file" id="folder-file-input" onchange="addFileToFolder()" hidden multiple>
+          </label>
+          <button onclick="deleteCurrentFolder()" class="delete-btn">Удалить папку</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <label class="upload-btn">
+      Загрузить папку
+      <input type="file" id="folder-upload" webkitdirectory directory multiple hidden>
+    </label>
+    <button class="button-file" onclick="addFolder()">Добавить папку</button>
+    <label class="upload-btn">
+      Загрузить файл
+      <input type="file" id="file-input" onchange="addRealFile()" hidden>
+    </label>
+    <div class="dropdown">
+      <button onclick="toggleDropdown()" class="dropbtn">Создать ▾</button>
+      <div id="dropdownMenu" class="dropdown-content">
+        <button id="createFolderBtn" onclick="addFolder()">Папка</button>
+        <a href="https://word.cloud.microsoft/open/onedrive/?docId=..." target="_blank">Документ</a>
+        <a href="https://excel.cloud.microsoft/open/onedrive/?docId=..." target="_blank">Таблица</a>
+        <a href="https://powerpoint.cloud.microsoft/open/onedrive/?docId=..." target="_blank">Презентация</a>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <h2>Все файлы</h2>
+    <div class="controls">
+      <button>🕘 Последние</button>
+      <button>⭐ Помеченные</button>
+    </div>
+  </header>
+
+  <table class="file-table">
+    <thead>
+    <tr>
+      <th>Название</th>
+      <th>⭐</th>
+      <th>У кого есть доступ</th>
+      <th>Изменено</th>
+    </tr>
+    </thead>
+
+    <div id="drop-area">Перетащите сюда файлы</div>
+
+    <tbody id="all-files-table">
+    <!-- Здесь будут отображаться все файлы и папки -->
+    </tbody>
+  </table>
+
+  <div class="file-viewer" style="margin-top: 20px; color: white;"></div>
+</main>
+
+</body>
+</html>

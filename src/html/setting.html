@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Профиль пользователя</title>
+  <link rel="stylesheet" href="../style/setting.css">
+  <script src="../js/setting.js"></script>
+</head>
+<body>
+<video autoplay loop muted class="video-background">
+  <source src="https://videos.pexels.com/video-files/4514642/4514642-hd_1920_1080_25fps.mp4" type="video/mp4">
+  Ваш браузер не поддерживает видео фон.
+</video>
+<div class="overlay">
+  <div class="profile-container">
+    <label for="avatar-upload">
+      <img src="https://placekitten.com/200/200" alt="Avatar" class="avatar" id="avatar" title="Нажмите, чтобы изменить фото">
+    </label>
+    <input type="file" id="avatar-upload" accept="image/*">
+
+    <div>
+      <h1 id="username">—</h1>
+      <button class="edit-inline-btn" onclick="editField('username')" title="Редактировать имя">&#9998;</button>
+    </div>
+    <div>
+      <p id="bio">—</p>
+      <button class="edit-inline-btn" onclick="editField('bio')" title="Редактировать статус">&#9998;</button>
+    </div>
+
+    <div class="info">
+      <div>
+        <span class="label">Email</span>
+        <span class="value" id="email">—</span>
+        <button class="edit-inline-btn" onclick="editField('email')" title="Редактировать email">&#9998;</button>
+      </div>
+      <div>
+        <span class="label">Телефон</span>
+        <span class="value" id="phone">—</span>
+        <button class="edit-inline-btn" onclick="editField('phone')" title="Редактировать телефон">&#9998;</button>
+      </div>
+      <div>
+        <span class="label">Страна</span>
+        <span class="value" id="country">—</span>
+        <button class="edit-inline-btn" onclick="editField('country')" title="Редактировать страну">&#9998;</button>
+      </div>
+    </div>
+
+    <!-- Новые настройки -->
+    <div class="settings-section">
+      <h2>Настройки</h2>
+      <div class="settings-option">
+        <label for="notifSwitch">Уведомления</label>
+        <label class="switch">
+          <input type="checkbox" id="notifSwitch" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="settings-option">
+        <label for="langSelect">Язык интерфейса</label>
+        <select id="langSelect">
+          <option value="uk">Українська</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+      <div class="settings-option">
+        <label for="privacySwitch">Приватный профиль</label>
+        <label class="switch">
+          <input type="checkbox" id="privacySwitch">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <button class="danger-btn" onclick="logout()">Выйти из аккаунта</button>
+      <button class="danger-btn" onclick="clearProfile()">Сбросить профиль</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
