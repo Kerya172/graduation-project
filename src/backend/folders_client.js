@@ -115,8 +115,12 @@ function showFolderModal(folderId, folderName, files) {
     body.innerHTML = `
         <h3>Вміст папки : ${folderName}</h3>
         <form id="uploadFileForm">
+                <div style="margin-bottom: 15px;">
+
             <input type="file" id="fileInput" name="file" required>
-            <button type="submit">Завантажити файл</button>
+            <button type="submit "style=" color:#ffffff;border:none; border-radius: 3px;padding:5px 10px; background:#007bff ">Завантажити файл</button>
+            </div>
+            <div id="fileList" style="border-top: 1px solid #ddd; padding-top: 15px; "></div>
         </form>
         <ul id="modalFileList"></ul>
     `;
@@ -127,11 +131,15 @@ function showFolderModal(folderId, folderName, files) {
         // ИСПРАВЛЕНО: используем file_name или original_name вместо file.name
         li.textContent = file.file_name || file.original_name || file.name || 'Без названия';
         li.style.cursor = 'pointer';
+        li.style.cssText='color: #007bff; margin-right: 10px;'
+        modalFileList.style.cssText ='display: flex; \n            justify-content: space-between; \n            align-items: center; \n            padding: 8px; \n            border: 1px solid #ddd; \n            margin: 5px 0; \n            border-radius: 3px;\n            background: #fff;'
         li.onclick = () => openFolderFile(file.id);
 
         // Кнопка удаления файла из папки
         const delBtn = document.createElement('button');
-        delBtn.textContent = 'Видалити';
+        delBtn.textContent = '🗑️Видалити';
+        delBtn.style.cssText = '' +
+            'background: #dc3545;             color: white;             border: none;            padding: 5px 10px;        border-radius: 3px;           cursor: pointer;           font-size: 12px; justify-content: right;';
         delBtn.onclick = (e) => {
             e.stopPropagation();
             removeFileFromFolder(folderId, file.id);

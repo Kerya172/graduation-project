@@ -125,12 +125,25 @@ function renderSharedFolders(folders) {
 
         const inviteBtn = document.createElement('button');
         inviteBtn.textContent = 'Запросити';
-        inviteBtn.style.cssText = 'margin-right: 5px; padding: 10px 15px; background: #35c75a; color: white; border: none; border-radius: 7px; cursor: pointer;';
+        inviteBtn.style.cssText = ' background: var(--bg-tertiary);\n' +
+            '  color: var(--text-secondary);\n' +
+            '  border: 1px solid var(--border);\n' +
+            '  padding: 4px 8px; /* Компактнее */\n' +
+            '  border-radius: var(--radius);\n' +
+            '  font-size: 11px; /* Очень маленький для иконочных кнопок */\n' +
+            '  cursor: pointer;';
         inviteBtn.onclick = () => inviteToSharedFolder(folder.id);
 
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = 'Видалити';
-        deleteBtn.style.cssText = 'padding: 10px 15px; background: #dc3545; color: white; border: none; border-radius: 7px; cursor: pointer;';
+        deleteBtn.style.cssText = ' background:rgb(220, 53, 69);;\n' +
+            '  color: var(--text-secondary);\n' +
+            '  border: 1px solid var(--border);\n' +
+            '  padding: 4px 8px; /* Компактнее */\n' +
+            '  border-radius: var(--radius);\n' +
+            '  font-size: 11px; /* Очень маленький для иконочных кнопок */\n' +
+            '  cursor: pointer;' +
+            'justify-content: end;';
         deleteBtn.onclick = () => deleteSharedFolder(folder.id);
 
         buttonContainer.appendChild(inviteBtn);

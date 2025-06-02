@@ -207,7 +207,7 @@ body {
   position: absolute;
   top: 14px;
   right: 160px; /* Скорректировано положение */
-  background: var(--bg-secondary);
+  background: #2d8758;
   color: var(--text-primary);
   border: 1px solid var(--border);
   padding: 7px 14px; /* Компактнее */
@@ -217,7 +217,7 @@ body {
 }
 
 .button-invite:hover {
-  background: var(--bg-hover);
+  background: #04be5c;
   border-color: var(--accent);
 }
 
@@ -506,6 +506,17 @@ body {
   font-size: 13px;
   background: var(--bg-primary); /* Темнее для контраста */
   color: var(--text-primary);
+  transition: border var(--transition-normal);
+  outline: none;
+  /* При наведении */
+  &:hover {
+    border-color: var(--accent);
+  }
+  /* При фокусе */
+  &:focus {
+    border-color: var(--accent);
+    background-color: var(--bg-secondary); /* Слегка осветлить при фокусе */
+  }
 }
 .group input[type="text"]:focus,
 .group input[type="email"]:focus,
@@ -650,6 +661,11 @@ body {
     margin-bottom: 15px;
     text-align: center;
   }
+  #inviteForm {
+    padding: 15px;
+    max-width: 100%;
+    width: 100%;
+  }
   .controls {
     margin-top: 0;
     flex-direction: column; /* Кнопки в столбец */
@@ -663,4 +679,35 @@ body {
   .dropdown-content {
     width: 100%; /* На всю ширину */
   }
+}
+.folder-container #sharedFolderList {
+  background: var(--bg-primary); /* Темнее чем фон секции */
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.folder-container :hover {
+  background: var(--bg-hover);
+  border-color: var(--border);
+}
+.folder-container #sharedFolderList span {
+  font-size: 13px;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.folder-container div {
+  display: flex;
+  gap: 6px;
+}
+.folder-container #sharedFolderList button {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  padding: 4px 8px; /* Компактнее */
+  border-radius: var(--radius);
+  font-size: 11px; /* Очень маленький для иконочных кнопок */
+  cursor: pointer;
 }
