@@ -3,14 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="../style/cloud.css">
-  <link rel="stylesheet" href="../style/light%20theme.css">
-  <script src="../js/cloud.js" defer></script>
-  <title>Файловый менеджер</title>
+  <link rel="stylesheet" href="/style/cloud.css">
+  <link rel="stylesheet" href="/style/light%20theme.css">
+  <script src="/js/profile-sync.js" defer></script>
+  <script src="/js/cloud.js" defer></script>
+  <script src="/backend/folders_client.js" defer></script>
+  <script src="/backend/shared_folders.js" defer></script>
+  <title>Файловий менеджер</title>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" rel="stylesheet">
-  
-
 </head>
+
 <body>
 
 <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
@@ -22,32 +24,34 @@
   </div>
 
   <div class="sidebar-nav">
-    <div class="nav-item">
+    <div class="nav-item" id="my-folders-btn">
       <span class="material-symbols-rounded nav-icon">folder</span>
-      <span class="nav-label">Мои папки</span>
+      <span class="nav-label">Мої паки</span>
     </div>
-    <div class="nav-item">
+    <div class="nav-item" id="my-files-btn">
       <span class="material-symbols-rounded nav-icon">insert_drive_file</span>
-      <span class="nav-label">Мои файлы</span>
+      <span class="nav-label">Мої файли</span>
     </div>
-    <div class="nav-item">
+    <div class="nav-item" id="upload-btn">
       <span class="material-symbols-rounded nav-icon">upload</span>
-      <span class="nav-label">Загрузить</span>
+      <span class="nav-label">Завантажити</span>
     </div>
     <div class="nav-item">
       <a href="setting.html" target="_blank" class="nav-link">
         <span class="material-symbols-rounded nav-icon">settings</span>
-        <span class="nav-label">Настройки</span>
+        <span class="nav-label">Налаштування</span>
       </a>
     </div>
     <div class="nav-item">
-      <a href="index.html" class="nav-link">
+      <a href="../html/index.html" class="nav-link">
         <span class="material-symbols-rounded nav-icon">logout</span>
-        <span class="nav-label">Выход</span>
+        <span class="nav-label">Вихід</span>
       </a>
     </div>
   </div>
 </aside>
+
+
 
 <main class="main-container">
   <!-- Блок профиля пользователя -->
@@ -61,124 +65,117 @@
 
   </div>
 
-  
-  <form class="search-container">
-    <input type="text" name="text" class="search" placeholder="Search...">
-    <input type="submit" value="Search" class="search-btn">
-  </form>
 
-  <button class="button-invite" onclick="show('block')">Пригласить участника +</button>
+
+  <button class="button-invite" onclick="show('block')">Запросити учасника +</button>
 
   <div id="filter" onclick="show('none')"></div>
 
   <div id="modalForm">
-    <form onsubmit="sendInvite(event)">
-      <h2>Пригласите пользователей в свою рабочую группу</h2>
-      <p>Они получат доступ к папкам, которыми поделились с участниками рабочей группы. Права доступа можно настроить сразу или позже.</p>
+    <form id="inviteForm" onsubmit="handleInvite(event)">
+      <h2>Запросіть користувачів до своєї робочої групи</h2>
+      <p>Вони отримають доступ до папок, якими ви поділитесь. Права доступу можна налаштувати зараз або пізніше.</p>
 
       <div class="group">
         <label for="email">Email</label>
-        <input type="email" placeholder="Добавьте адрес эл. почты" id="email">
+        <input type="email" placeholder="Додайте email адресу" id="email" required>
       </div>
 
       <div class="group">
-        <label for="text">Комментарий</label>
-        <input type="text" placeholder="Добавьте комментарий" id="text">
+        <label for="comment">Коментар</label>
+        <input type="text" placeholder="Додайте коментар" id="comment" required>
       </div>
 
-      <div class="task-list">
-        <p><strong>Добавьте задания (необязательно)</strong></p>
-        <p>Помогите новым участникам рабочей группы с настройкой — предложите им выполнить эти действия.</p>
-
-        <label class="custom-checkbox">
-          <input type="checkbox" checked>
-          <span class="checkmark"></span>
-          Установить программу для компьютера
-        </label>
-        <label class="custom-checkbox">
-          <input type="checkbox" checked>
-          <span class="checkmark"></span>
-          Установить мобильное приложение
-        </label>
-      </div>
+      <div id="inviteFolderList"></div>
 
       <div class="group buttons">
-        <button class="ok-btn" type="submit">Отправить приглашение</button>
-        <button type="button" class="cancel-btn" onclick="show('none')">Отмена</button>
+        <button class="ok-btn" type="submit">Надіслати запрошення</button>
+        <button type="button" class="cancel-btn" onclick="show('none')">Скасувати</button>
       </div>
     </form>
   </div>
 
   <!-- Folder Modal -->
-  <div id="folderModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeFolderModal()">&times;</span>
-      <h2 id="folderModalTitle">Папка</h2>
-      <div class="folder-controls">
-        <input type="text" id="folderNameInput" class="folder-name-input">
-        <button onclick="updateFolderName()" class="save-btn">Сохранить</button>
-      </div>
-      <div class="folder-files-container">
-        <h3>Файлы в папке:</h3>
-        <div id="folderFilesList" class="folder-files-list"></div>
-        <div class="folder-actions">
-          <label class="upload-btn">
-            Добавить файл
-            <input type="file" id="folder-file-input" onchange="addFileToFolder()" hidden multiple>
-          </label>
-          <button onclick="deleteCurrentFolder()" class="delete-btn">Удалить папку</button>
-        </div>
+  <div id="folderModal" style="display: none;">
+    <div id="folderModalContent">
+      <button class="btn-close" onclick="closeFolderModal()">×</button>
+      <h2 id="modalFolderTitle"></h2>
+      <div id="modalFolderBody">
+        <!-- Форма для загрузки файла -->
+        <form id="uploadFileForm" enctype="multipart/form-data">
+          <input type="file" id="fileInput" name="file" />
+          <button type="button" onclick="uploadFileToFolder(folderId)">Загрузить файл</button>
+        </form>
+        <div id="fileList">Список файлов будет отображаться здесь...</div>
       </div>
     </div>
   </div>
 
+
   <div class="controls">
+
+    <button class="button-file" onclick="addFolder()">Додати папку</button>
     <label class="upload-btn">
-      Загрузить папку
-      <input type="file" id="folder-upload" webkitdirectory directory multiple hidden>
+      Завантажити файл
+      <input type="file" id="file-input" onchange="addRealFile(this)" hidden>
     </label>
-    <button class="button-file" onclick="addFolder()">Добавить папку</button>
-    <label class="upload-btn">
-      Загрузить файл
-      <input type="file" id="file-input" onchange="addRealFile()" hidden>
+    <label>
+      <button class="upload-btn" onclick="createSharedFolder()">Створити спільну папку</button>
+      <div id="shared-folder-container"></div>
     </label>
     <div class="dropdown">
-      <button onclick="toggleDropdown()" class="dropbtn">Создать ▾</button>
+      <button onclick="toggleDropdown()" class="dropbtn">Створити ▾</button>
       <div id="dropdownMenu" class="dropdown-content">
         <button id="createFolderBtn" onclick="addFolder()">Папка</button>
         <a href="https://word.cloud.microsoft/open/onedrive/?docId=..." target="_blank">Документ</a>
-        <a href="https://excel.cloud.microsoft/open/onedrive/?docId=..." target="_blank">Таблица</a>
-        <a href="https://powerpoint.cloud.microsoft/open/onedrive/?docId=..." target="_blank">Презентация</a>
+        <a href="https://excel.cloud.microsoft/open/onedrive/?docId=..." target="_blank">Таблиця</a>
+        <a href="https://powerpoint.cloud.microsoft/open/onedrive/?docId=..." target="_blank">Презентація</a>
       </div>
     </div>
   </div>
 
+
+  <!-- Замените существующую таблицу на эту -->
+  <div id="drop-area">Перетягніть сюди файли</div>
+  <h2>Ваші файли</h2>
   <header>
-    <h2>Все файлы</h2>
-    <div class="controls">
-      <button>🕘 Последние</button>
-      <button>⭐ Помеченные</button>
+    <div class="sort-options">
+      <span class="material-symbols-rounded sort-icon" data-sort="name" onclick="sortFiles('name', this)">sort_by_alpha</span>
+      <span class="material-symbols-rounded sort-icon" data-sort="date" onclick="sortFiles('date', this)">date_range</span>
+      <span class="material-symbols-rounded sort-icon" data-sort="size" onclick="sortFiles('size', this)">storage</span>
     </div>
   </header>
-
   <table class="file-table">
     <thead>
     <tr>
-      <th>Название</th>
+      <th>Назва</th>
       <th>⭐</th>
-      <th>У кого есть доступ</th>
-      <th>Изменено</th>
+      <th>У кого є доступ</th>
+      <th>Завантажено</th>
+      <th>Видалити</th>
     </tr>
     </thead>
-
-    <div id="drop-area">Перетащите сюда файлы</div>
-
     <tbody id="all-files-table">
-    <!-- Здесь будут отображаться все файлы и папки -->
+    <!-- Здесь будут динамически добавляться строки с файлами -->
     </tbody>
   </table>
 
   <div class="file-viewer" style="margin-top: 20px; color: white;"></div>
+
+  <section id="foldersPanel" class="folder-section">
+    <h3>Мої папки</h3>
+    <div id="folderList" class="folder-container">
+      <!-- Динамически добавляемые папки -->
+    </div>
+  </section>
+
+  <section id="shared-folders-section" class="folder-section">
+    <h3>Спільні папки</h3>
+    <div id="sharedFolderList" class="folder-container">
+      <!-- Динамически добавляемые общие папки -->
+    </div>
+  </section>
+
 </main>
 
 </body>

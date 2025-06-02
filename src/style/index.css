@@ -108,31 +108,62 @@ button:hover {
     background-color: rgba(0, 0, 0, 0.96);
 }
 
-/* Фон-затемнення */
-#filter {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6);
-    display: none;
-    z-index: 10;
-}
-
-/* Модальне вікно */
-#modalForm {
+#modalForm, #modalForm2 {
     display: none;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: #242323;
-    padding: 30px;
-    border-radius: 16px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.5);
-    z-index: 20;
-    width: 320px;
+    background: #2c2a2a;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+    z-index: 1001;
+    width: 550px;
+    max-width: 90%;
+    color: #ffffff;
+}
+
+#filter, #filterEntry {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+}
+
+/* Стилі для елементів форми */
+.group {
+    margin-bottom: 13px;
+}
+
+.group input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    background: #424242;
+    color: white;
+    outline: none;
+}
+
+.btn-primary {
+    background-color: #35c75a;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #2d8758;
 }
 
 /* Заголовок */
@@ -201,88 +232,88 @@ button:hover {
 
 /* --модальне вікно для вибору тарифу-- */
 .pricing-table {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 30px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 30px;
 }
 
 .plan {
-  border: 2px solid #ccc;
-  border-radius: 10px;
-  padding: 20px;
-  width: 350px;
-  text-align: center;
-  background: linear-gradient(to bottom right, #1e1e1e, #515152);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  color: #ffffff;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    width: 350px;
+    text-align: center;
+    background: linear-gradient(to bottom right, #1e1e1e, #515152);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    color: #ffffff;
 }
 
 .plan:hover {
-  transform: scale(1.05);
-  border-color: #999;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    transform: scale(1.05);
+    border-color: #999;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .plan.selected {
-  border-color: #000000;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
-  background: linear-gradient(to bottom right, #0a0018, #dfdfdf);
-  color: #000000;
+    border-color: #000000;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+    background: linear-gradient(to bottom right, #0a0018, #dfdfdf);
+    color: #000000;
 }
 
 .plan .label {
-  position: absolute;
-  top: -15px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #170131;
-  color: white;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: bold;
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #170131;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
 }
 
 .plan h2 {
-  margin: 0 0 10px;
-  font-size: 16px;
+    margin: 0 0 10px;
+    font-size: 16px;
 }
 
 .plan h2 span {
-  display: block;
-  font-size: 14px;
-  color: #bbbbbb;
+    display: block;
+    font-size: 14px;
+    color: #bbbbbb;
 }
 
 .price {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 15px;
-  color: #c59f08;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #c59f08;
 }
 
 .plan ul {
-  list-style: none;
-  padding: 0;
-  text-align: left;
-  margin-top: 10px;
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    margin-top: 10px;
 }
 
 .plan ul li {
-  margin: 8px 0;
-  font-size: 14px;
-  color: #dddddd;
+    margin: 8px 0;
+    font-size: 14px;
+    color: #dddddd;
 }
 
 .plan ul li::before {
-  content: " ✓";
-  font-size: 16px;
-  color: #000000;
-  margin-right: 8px;
+    content: " ✓";
+    font-size: 16px;
+    color: #000000;
+    margin-right: 8px;
 }
 
 .slide__content h2::after {

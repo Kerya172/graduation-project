@@ -1,147 +1,459 @@
-
 .dark-theme {
-    background-color: #EFEFEFFF;
-    color: white;
+    background-color: #ffffff;
+    color: #232323;
 }
+
 .dark-theme .main-container {
-    background-color: #efefef;
+    background-color: #f9f9f9;
+    color: #232323;
 }
 
 .dark-theme .nav-item {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: transparent;
+    color: #232323;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
 }
 
 .dark-theme .nav-item:hover {
-    background-color: #22287e;
+    background-color: #f0f0f0;
+    color: #0078d7;
 }
 
 .dark-theme .search-invite-bar {
-    background-color: #171717;
+    background-color: #ffffff;
 }
 
 .dark-theme .search {
-    background-color: #d7d7d7;
-    color: #000000;
+    background-color: #f9f9f9;
+    color: #232323;
+    border: 1px solid #dcdcdc;
 }
 
-.dark-theme #sidebar {
-    background-color: #ffffff;
-    color: rgba(255, 255, 255, 0.7);
-    border-color: #0b0b0e;
+.dark-theme .search-btn {
+    --button-color: #0078d7;
+    color: #ffffff;
+    border: 1px solid #0078d7;
+    background: #0078d7;
 }
 
-.dark-theme  .sidebar-header {
-    background-color: rgba(255, 255, 255, 0.7);
-}
-
-.dark-theme .button-invite {
-     margin-left: 980px;
- --button-color: rgb(252, 50, 0);
-    padding: 10px  30px;
-    font-size: 15.5px;
-    border-radius: 10px;
-    background-color: transparent;
-    border: 1px solid var(--button-color);
-    color: #6b6767;
-    cursor: pointer;
-    width: fit-content;
-    justify-content: center;
-    text-transform: uppercase;
-  margin-bottom: 20px;
-}
-
-.dark-theme .material-symbols-rounded {
-    color: #3f4046;
-}
-.dark-theme .material-symbols-rounded:hover {
-    color: #22287e;
-}
-
-.dark-theme .toggle-btn {
-    color: #3f4046;
-}
-.dark-theme .sidebar-header {
-    color: #3f4046;
-}
-
-.dark-theme .nav-item {
-    color: #3f4046;
-}
-
-.dark-theme .content {
-    background-color: rgba(255, 255, 255, 0.7);
-}
-.dark-theme #drop-area {
-   color: rgba(0, 0, 0, 0.7);
-}
-
-.dark-theme .button-file  {
-    background-color: #22287e;
-}
-
-.dark-theme .upload-btn {
-    background-color: #22287e;
+.dark-theme .search-btn:hover {
+    background: #005bb5;
     color: #ffffff;
 }
 
-.dark-theme .dropbtn {
-    background-color: #22287e;
-}
-
-.dark-theme .button-file:hover  {
-    background-color: #14182f;
-}
-
-.dark-theme .upload-btn:hover {
-    background-color: #14182f;
-}
-
-.dark-theme .dropbtn:hover {
-    background-color: #14182f;
-}
-
-.dark-theme .file-viewers {
-    background-color: #22287e;
-}
-
-.dark-theme .file-viewers:hover {
-    background-color: #14182f;
+.dark-theme .button-invite {
+    --button-color: #ff4d4d;
+    color: #ffffff;
+    border: 1px solid #ff4d4d;
+    background: #ff4d4d;
 }
 
 .dark-theme .button-invite:hover {
-    background-color: #ad3303;
+    background: #d43c3c;
+    color: #ffffff;
 }
 
-
-
-
-.dark-theme .folder{
-    background-color: rgba(217, 217, 217, 0.7);
+/* Кнопки управления */
+.dark-theme .controls button,
+.dark-theme .button-file,
+.dark-theme .upload-btn,
+.dark-theme .dropbtn {
+    --button-color: #0078d7;
+    color: #ffffff;
+    border: 1px solid #0078d7;
+    background: #0078d7;
 }
+
+.dark-theme .controls button:hover,
+.dark-theme .button-file:hover,
+.dark-theme .upload-btn:hover,
+.dark-theme .dropbtn:hover {
+    background: #005bb5;
+    color: #ffffff;
+}
+
+/* Дропдаун */
+.dark-theme .dropdown-content {
+    background-color: #ffffff;
+    color: #232323;
+    border: 1px solid #dcdcdc;
+}
+
+.dark-theme .dropdown-content a,
+.dark-theme .dropdown-content button {
+    color: #232323;
+}
+
+.dark-theme .dropdown-content a:hover,
+.dark-theme .dropdown-content button:hover {
+    background-color: #f0f0f0;
+    color: #0078d7;
+}
+
+/* Модальные окна */
+.dark-theme .modal,
+.dark-theme #modalForm,
+.dark-theme .modal-content {
+    background-color: #ffffff;
+    color: #232323;
+    border: 1px solid #dcdcdc;
+}
+
+.dark-theme .modal-header {
+    background-color: #f0f0f0;
+    color: #232323;
+}
+
+.dark-theme .close {
+    color: #ff4d4d;
+}
+
+.dark-theme .close:hover {
+    color: #ffffff;
+    background: #ff4d4d;
+}
+
+/* Инпуты */
+.dark-theme .group input,
+.dark-theme .folder-name-input,
+.dark-theme input[type="file"] {
+    background: #f9f9f9;
+    color: #232323;
+    border: 1px solid #dcdcdc;
+}
+
+.dark-theme .group input:focus,
+.dark-theme .folder-name-input:focus {
+    border: 1.5px solid #0078d7;
+    background: #ffffff;
+}
+
+/* Файлы и папки */
+.dark-theme .content {
+    background: #ffffff;
+    color: #232323;
+}
+
+.dark-theme .folder,
 .dark-theme .file {
-    background-color: #D9D9D9B2;
+    background: #f9f9f9;
+    color: #232323;
+    border: 1px solid #dcdcdc;
 }
 
-.dark-theme .folders-list {
-color: #000000;
+.dark-theme .folder-item,
+.dark-theme .file-item {
+    background: #ffffff;
+    color: #232323;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
 }
 
-.dark-theme .file-viewers {
-color: #000000;
+.dark-theme .folder-item:hover,
+.dark-theme .file-item:hover {
+    background: #f0f0f0;
+    color: #0078d7;
 }
 
-.dark-theme ,.modal-content {
-    background-color: #ffffff;
+/* Таблица файлов */
+.dark-theme .file-table {
+    background: #ffffff;
+    color: #232323;
 }
-.dark-theme, .modal-header {
-    background-color: #000000;
-}
-.dark-theme,.folder-name-input {
-    background-color: #ffffff;
-    color: #000000;
-}
-.dark-theme, #folderModalTitle {
-    background-color: #ffffff;
-    color: #000000;
 
+.dark-theme .file-table thead {
+    background: #f0f0f0;
+}
+
+.dark-theme .file-table th,
+.dark-theme .file-table td {
+    border-bottom: 1px solid #dcdcdc;
+}
+
+/* Drag & Drop */
+.dark-theme #drop-area {
+    border: 2px dashed #0078d7;
+    background: #f9f9f9;
+    color: #232323;
+}
+
+.dark-theme #drop-area.highlight {
+    border-color: #35c75a;
+    background: #e0ffe7;
+}
+
+/* Переключатель темы */
+.dark-theme .theme-toggle {
+    color: #0078d7;
+    background: #f9f9f9;
+}
+
+/* Блок профиля */
+.dark-theme .profile-container {
+    background: #ffffff;
+    color: #232323;
+    border: 1px solid #dcdcdc;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.2s, border 0.2s;
+}
+
+.dark-theme .profile-container:hover {
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10);
+    border: 1.5px solid #0078d7;
+}
+
+.dark-theme .avatar {
+    border: 2px solid #dcdcdc;
+}
+
+.dark-theme .avatar:hover {
+    border: 2px solid #0078d7;
+    transform: scale(1.06);
+}
+
+.dark-theme #username {
+    color: #232323;
+}
+
+/* Иконки */
+.dark-theme .material-symbols-rounded,
+.dark-theme .icon,
+.dark-theme .star {
+    color: #0078d7;
+}
+
+.dark-theme .material-symbols-rounded:hover,
+.dark-theme .star:hover {
+    color: #35c75a;
+}
+
+/* Прочее */
+.dark-theme .delete-btn,
+.dark-theme .file-delete-btn {
+    background: #ff4d4d;
+    color: #ffffff;
+}
+
+.dark-theme .delete-btn:hover,
+.dark-theme .file-delete-btn:hover {
+    background: #d43c3c;
+}
+
+.dark-theme .save-btn {
+    background: #35c75a;
+    color: #ffffff;
+}
+
+.dark-theme .save-btn:hover {
+    background: #2d8758;
+}
+
+.dark-theme .ok-btn {
+    background: #35c75a;
+    color: #ffffff;
+}
+
+.dark-theme .ok-btn:hover {
+    background: #2d8758;
+}
+
+.dark-theme .cancel-btn {
+    background: #f0f0f0;
+    color: #232323;
+}
+
+.dark-theme .cancel-btn:hover {
+    background: #dcdcdc;
+}
+
+/* Для совместимости с существующим JS переключателем темы */
+body.dark-theme {
+    background: #ffffff;
+    color: #232323;
+}
+
+/* Светлая тема */
+body.dark-theme {
+    background: #ffffff;
+    color: #232323;
+}
+
+/* Элементы при наведении (светлая тема) */
+body.dark-theme .folder-item:hover,
+body.dark-theme .file-item:hover,
+body.dark-theme .nav-item:hover {
+    background: #f0f0f0; /* Светлый фон при наведении */
+    color: #0078d7; /* Синий текст */
+}
+
+/* Таблица файлов (светлая тема) */
+body.dark-theme .file-table {
+    background: #ffffff;
+    color: #232323;
+}
+
+body.dark-theme .file-table thead {
+    background: #f0f0f0;
+    color: #232323;
+}
+
+body.dark-theme .file-table th,
+body.dark-theme .file-table td {
+    border-bottom: 1px solid #dcdcdc;
+    color: #232323; /* Тёмный текст */
+}
+
+/* Выделенная строка в таблице (светлая тема) */
+body.dark-theme .file-table tr:hover {
+    background: #f0f0f0; /* Светлый фон при наведении */
+    color: #232323; /* Тёмный текст */
+}
+
+/* Кнопки удаления (светлая тема) */
+body.dark-theme .btn {
+    background: #ff4d4d;
+    color: #ffffff;
+}
+
+body.dark-theme .delete-btn:hover {
+    background: #d43c3c;
+    color: #ffffff;
+}
+
+/* Светлая тема для блоков */
+.dark-theme #foldersPanel,
+.dark-theme #shared-folders-section {
+    background: #ffffff; /* Светлый фон */
+    color: #232323; /* Тёмный текст */
+    border: 1px solid #dcdcdc; /* Светлая рамка */
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06); /* Лёгкая тень */
+    border-radius: 8px;
+    padding: 15px;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+}
+
+body.dark-theme .profile-container:hover,
+body.dark-theme .shared-folder-container:hover {
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.10); /* Увеличенная тень при наведении */
+    border: 1.5px solid #0078d7; /* Синяя рамка при наведении */
+}
+
+/* Заголовки блоков */
+.dark-theme #foldersPanel h3,
+.dark-theme #shared-folders-section h3 {
+    color: #0078d7; /* Синий текст заголовков */
+    margin-bottom: 10px;
+}
+
+.dark-theme .folder-item-container h2,
+.dark-theme .file-item-section .folder-item {
+    color: #232323; /* Тёмный текст для названий папок и файлов */
+}
+
+/* Инпуты внутри блоков */
+body.dark-theme .profile-container input,
+body.dark-theme .shared-folder-container input {
+    background: #f9f9f9; /* Светлый фон */
+    color: #232323; /* Тёмный текст */
+    border: 1px solid #dcdcdc; /* Светлая рамка */
+    border-radius: 5px;
+    padding: 8px;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border 0.3s, background 0.3s;
+}
+
+body.dark-theme .profile-container input:focus,
+body.dark-theme .shared-folder-container input:focus {
+    border: 1.5px solid #0078d7; /* Синяя рамка при фокусе */
+    background: #ffffff; /* Белый фон при фокусе */
+}
+
+/* Кнопки внутри блоков */
+body.dark-theme .profile-container button,
+body.dark-theme .shared-folder-container button {
+    background: #35c75a; /* Зелёный фон */
+    color: #ffffff; /* Белый текст */
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+body.dark-theme .profile-container button:hover,
+body.dark-theme .shared-folder-container button:hover {
+    background: #2d8758; /* Более тёмный зелёный при наведении */
+    transform: scale(1.05); /* Лёгкое увеличение при наведении */
+}
+
+/* Светлый сайдбар */
+body.dark-theme .sidebar {
+    background: #f9f9f9; /* Светлый фон */
+    color: #232323; /* Тёмный текст */
+    border-right: 1px solid #dcdcdc; /* Светлая граница */
+    transition: background 0.3s, color 0.3s;
+}
+
+/* Элементы навигации в сайдбаре */
+body.dark-theme .sidebar .nav-item {
+    background: transparent; /* Прозрачный фон по умолчанию */
+    color: #232323; /* Тёмный текст */
+    border-radius: 8px;
+    padding: 10px;
+    transition: background 0.3s, color 0.3s;
+}
+
+/* Элементы навигации при наведении */
+body.dark-theme .sidebar .nav-item:hover {
+    background: #e0e0e0; /* Светло-серый фон при наведении */
+    color: #0078d7; /* Синий текст при наведении */
+}
+
+/* Активный элемент навигации */
+body.dark-theme .sidebar .nav-item.active {
+    background: #dcdcdc; /* Светло-серый фон для активного элемента */
+    color: #0078d7; /* Синий текст для активного элемента */
+}
+
+/* Иконки в сайдбаре */
+body.dark-theme .sidebar .nav-icon {
+    color: #0078d7; /* Синий цвет иконок */
+    transition: color 0.3s;
+}
+
+body.dark-theme .sidebar .nav-icon:hover {
+    color: #35c75a; /* Зелёный цвет иконок при наведении */
+}
+
+/* Заголовок сайдбара */
+body.dark-theme .sidebar-header {
+    background: #ffffff; /* Белый фон */
+    color: #232323; /* Тёмный текст */
+    padding: 15px;
+    border-bottom: 1px solid #dcdcdc; /* Светлая граница */
+}
+
+/* Кнопка переключения сайдбара */
+body.dark-theme .sidebar-header .toggle-btn {
+    background: #0078d7; /* Синий фон */
+    color: #ffffff; /* Белый текст */
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+body.dark-theme .sidebar-header .toggle-btn:hover {
+    background: #005bb5; /* Более тёмный синий при наведении */
+    transform: scale(1.05); /* Лёгкое увеличение при наведении */
+}
+.dark-theme .sidebar-header .nav-label {
+    font-weight: bold;
+    color: #115994; /* Синий цвет для заголовка навигации */
+    font-size: 1.2em;
+    margin-bottom: 10px;
 }

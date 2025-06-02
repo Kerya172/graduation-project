@@ -1,570 +1,723 @@
-// Data structure to store folders and their files
-const foldersData = {};
-const filesData = {};
+// Получение текущего пользователя из localStorage
+function getCurrentUser() {
+  const userJson = localStorage.getItem('user');
+  if (!userJson) {
+    console.error('Пользователь не найден в localStorage');
+    return null;
+  }
 
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  sidebar.classList.toggle('collapsed');
-}
-
-function show(state) {
-  document.getElementById('modalForm').style.display = state;
-  document.getElementById('filter').style.display = state;
-}
-
-function toggleDropdown() {
-  const dropdown = document.getElementById("dropdownMenu");
-  dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-}
-
-function addFolder() {
-  const folderName = prompt("Введите имя папки:");
-  if (folderName) {
-    const folderId = 'folder_' + Date.now();
-
-    foldersData[folderId] = {
-      id: folderId,
-      name: folderName,
-      files: [],
-      type: 'folder',
-      modified: new Date().toLocaleString()
-    };
-
-    saveData();
-    updateAllFilesTable();
+  try {
+    const user = JSON.parse(userJson);
+    if (!user || !user.email) {
+      console.error('Некорректные данные пользователя:', user);
+      return null;
+    }
+    return user;
+  } catch (error) {
+    console.error('Ошибка при получении пользователя:', error);
+    return null;
   }
 }
 
-function openFolderModal(folderId) {
-  const folder = foldersData[folderId];
-  if (!folder) return;
+// Загрузка файлов пользователя (только не в папках)
+async function loadFiles() {
+  const user = getCurrentUser();
+  if (!user) return [];
 
-  const modal = document.getElementById("folderModal");
-  const folderTitle = document.getElementById("folderModalTitle");
-  const folderNameInput = document.getElementById("folderNameInput");
-  const folderFilesList = document.getElementById("folderFilesList");
-
-  // Set current folder
-  currentFolderId = folderId;
-
-  // Update modal content
-  folderTitle.textContent = folder.name;
-  folderNameInput.value = folder.name;
-
-  // Clear and populate files list
-  folderFilesList.innerHTML = '';
-
-  if (folder.files && folder.files.length > 0) {
-    folder.files.forEach((fileId, index) => {
-      const file = filesData[fileId];
-      if (!file) return;
-
-      const fileItem = document.createElement("div");
-      fileItem.className = "folder-file-item";
-      fileItem.innerHTML = `
-        <span onclick="openFile('${fileId}')" style="cursor: pointer;">${file.name}</span>
-        <button onclick="deleteFileFromFolder('${folderId}', '${fileId}', event)" class="file-delete-btn">×</button>
-      `;
-      folderFilesList.appendChild(fileItem);
+  try {
+    const response = await fetch('/api/documents', {
+      headers: { 'X-User': JSON.stringify(user) }
     });
-  }
 
-  // Show modal
-  modal.style.display = "block";
-  document.getElementById("filter").style.display = "block";
-}
-
-function closeFolderModal() {
-  document.getElementById("folderModal").style.display = "none";
-  document.getElementById("filter").style.display = "none";
-  currentFolderId = null;
-}
-
-function updateFolderName() {
-  const folderNameInput = document.getElementById("folderNameInput");
-  const newName = folderNameInput.value.trim();
-
-  if (newName && currentFolderId && foldersData[currentFolderId]) {
-    foldersData[currentFolderId].name = newName;
-    foldersData[currentFolderId].modified = new Date().toLocaleString();
-
-    saveData();
-    updateAllFilesTable();
-    closeFolderModal();
-  }
-}
-
-function deleteCurrentFolder() {
-  if (currentFolderId && confirm(`Вы уверены, что хотите удалить папку "${foldersData[currentFolderId].name}"?`)) {
-    // Удаляем все файлы из этой папки
-    if (foldersData[currentFolderId].files) {
-      foldersData[currentFolderId].files.forEach(fileId => {
-        delete filesData[fileId];
-      });
+    if (!response.ok) {
+      const text = await response.text();
+      console.error('Ошибка ответа сервера:', text);
+      return [];
     }
 
-    // Удаляем саму папку
-    delete foldersData[currentFolderId];
+    const data = await response.json();
+    let files = [];
 
-    saveData();
-    updateAllFilesTable();
-    closeFolderModal();
-  }
-}
-
-function addFileToFolder() {
-  const fileInput = document.getElementById("folder-file-input");
-  const files = fileInput.files;
-
-  if (files.length > 0 && currentFolderId && foldersData[currentFolderId]) {
-    // Проверка на размер файлов
-    const maxSize = 1024 * 1024 * 1024; // 50MB
-    for (let file of files) {
-      if (file.size > maxSize) {
-        alert(`Файл ${file.name} слишком большой (${(file.size/1024/1024).toFixed(2)}MB). Максимальный размер: 50MB`);
-        return;
-      }
+    if (Array.isArray(data)) {
+      files = data;
+    } else if (data.success && Array.isArray(data.files)) {
+      files = data.files;
+    } else if (Array.isArray(data.files)) {
+      files = data.files;
     }
 
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const fileId = 'file_' + Date.now() + '_' + i;
+    // Фильтруем файлы: показываем только те, которые НЕ находятся в папках
+    const filesNotInFolders = files.filter(file => !file.folder_id || file.folder_id === null);
 
-      // Читаем содержимое файла
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        filesData[fileId] = {
-          id: fileId,
-          name: file.name,
-          size: file.size,
-          type: file.type || 'application/octet-stream', // Дефолтный тип для неизвестных файлов
-          modified: new Date().toLocaleString(),
-          content: e.target.result,
-          parentFolder: currentFolderId
-        };
-
-        // Добавляем файл в папку
-        foldersData[currentFolderId].files.push(fileId);
-        foldersData[currentFolderId].modified = new Date().toLocaleString();
-
-        saveData();
-        updateAllFilesTable();
-        openFolderModal(currentFolderId);
-      };
-      reader.onerror = function() {
-        alert(`Ошибка при чтении файла ${file.name}`);
-      };
-      reader.readAsDataURL(file);
-    }
+    return filesNotInFolders;
+  } catch (error) {
+    console.error('Ошибка загрузки файлов:', error);
+    return [];
   }
 }
 
-function deleteFileFromFolder(folderId, fileId, event) {
-  event.stopPropagation();
-  if (confirm(`Удалить файл "${filesData[fileId]?.name}"?`)) {
-    // Удаляем файл из папки
-    const folder = foldersData[folderId];
-    if (folder && folder.files) {
-      folder.files = folder.files.filter(id => id !== fileId);
-      folder.modified = new Date().toLocaleString();
-    }
+// Обновление таблицы файлов
+async function updateAllFilesTable() {
+  const files = await loadFiles();
+  const tbody = document.getElementById('all-files-table');
+  if (!tbody) return;
 
-    // Удаляем сам файл
-    delete filesData[fileId];
-
-    saveData();
-    updateAllFilesTable();
-    openFolderModal(folderId);
-  }
-}
-
-function addRealFile() {
-  const fileInput = document.getElementById("file-input");
-  const files = fileInput.files;
-
-  if (files.length > 0) {
-    // Проверка на размер файлов
-    const maxSize = 50 * 1024 * 1024; // 50MB
-    for (let file of files) {
-      if (file.size > maxSize) {
-        alert(`Файл ${file.name} слишком большой (${(file.size/1024/1024).toFixed(2)}MB). Максимальный размер: 50MB`);
-        return;
-      }
-    }
-
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const fileId = 'file_' + Date.now() + '_' + i;
-
-      // Читаем содержимое файла
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        filesData[fileId] = {
-          id: fileId,
-          name: file.name,
-          size: file.size,
-          type: file.type || 'application/octet-stream', // Дефолтный тип для неизвестных файлов
-          modified: new Date().toLocaleString(),
-          content: e.target.result
-        };
-
-        saveData();
-        updateAllFilesTable();
-      };
-      reader.onerror = function() {
-        alert(`Ошибка при чтении файла ${file.name}`);
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-}
-
-function saveData() {
-  localStorage.setItem('foldersData', JSON.stringify(foldersData));
-  localStorage.setItem('filesData', JSON.stringify(filesData));
-}
-
-function loadData() {
-  const savedFolders = localStorage.getItem('foldersData');
-  const savedFiles = localStorage.getItem('filesData');
-
-  if (savedFolders) {
-    Object.assign(foldersData, JSON.parse(savedFolders));
-  }
-
-  if (savedFiles) {
-    Object.assign(filesData, JSON.parse(savedFiles));
-  }
-
-  updateAllFilesTable();
-}
-
-function updateAllFilesTable() {
-  const tableBody = document.getElementById('all-files-table');
-  tableBody.innerHTML = '';
-
-  // Сначала добавляем папки
-  for (const folderId in foldersData) {
-    const folder = foldersData[folderId];
-
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td onclick="openFolderModal('${folderId}')" style="cursor: pointer;">
-        <img class="icon" src="https://img.icons8.com/color/24/000000/folder-invoices.png">
-        ${folder.name}
-      </td>
-      <td><span class="star" onclick="toggleStar(this)">☆</span></td>
-      <td>Только вы</td>
-      <td>${folder.modified || '--'}</td>
-    `;
-    tableBody.appendChild(row);
-  }
-
-  // Затем добавляем файлы без папок
-  for (const fileId in filesData) {
-    const file = filesData[fileId];
-
-    // Пропускаем файлы, которые уже в папках
-    if (file.parentFolder) continue;
-
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td onclick="openFile('${fileId}')" style="cursor: pointer;">
-        <img class="icon" src="${getFileIcon(file)}">
+  tbody.innerHTML = '';
+  files.forEach(file => {
+    const tr = document.createElement('tr');
+    tr.onclick = () => openFile(file.id);
+    tr.innerHTML = `
+      <td>
+        <span class="material-symbols-rounded">description</span>
         ${file.name}
       </td>
-      <td><span class="star" onclick="toggleStar(this)">☆</span></td>
+      <td>
+        <span class="star" onclick="toggleStar(this, event)">
+          ${file.starred ? '⭐' : '☆'}
+        </span>
+      </td>
       <td>Только вы</td>
-      <td>${file.modified || '--'}</td>
-      <td><button onclick="deleteFile('${fileId}', event)" class="delete-file-btn">Удалить</button></td>
+      <td>${file.created_at ? new Date(file.created_at).toLocaleString() : ''}</td>
+      <td>
+        <button onclick="deleteFile(${file.id}, event)">×</button>
+      </td>
     `;
-    tableBody.appendChild(row);
+    tbody.appendChild(tr);
+  });
+}
+
+// Загрузка файла
+async function uploadFile(file) {
+  const user = getCurrentUser();
+  if (!user) {
+    alert('Необходимо войти в систему');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const response = await fetch('/api/documents', {
+      method: 'POST',
+      headers: { 'X-User': JSON.stringify(user) },
+      body: formData
+    });
+
+    const data = await response.json();
+    if (data.success) {
+      await updateAllFilesTable();
+      alert('Файл успешно загружен!');
+    } else {
+      alert('Ошибка загрузки файла: ' + (data.error || ''));
+    }
+  } catch (error) {
+    console.error('Ошибка:', error);
+    alert('Ошибка загрузки файла');
   }
 }
 
-function getFileIcon(file) {
-  if (!file.type) return 'https://img.icons8.com/color/24/000000/file.png';
+// Удаление файла
+async function deleteFile(fileId, event) {
+  if (event) event.stopPropagation();
 
-  const type = file.type.toLowerCase();
-
-  if (type.includes('image')) return 'https://img.icons8.com/color/24/000000/image-file.png';
-  if (type.includes('pdf')) return 'https://img.icons8.com/color/24/000000/pdf.png';
-  if (type.includes('word')) return 'https://img.icons8.com/color/24/000000/word.png';
-  if (type.includes('excel')) return 'https://img.icons8.com/color/24/000000/excel.png';
-  if (type.includes('powerpoint')) return 'https://img.icons8.com/color/24/000000/powerpoint.png';
-  if (type.includes('zip') || type.includes('compressed') || type.includes('rar') || type.includes('7z') || type.includes('tar') || type.includes('gzip'))
-    return 'https://img.icons8.com/color/24/000000/zip.png';
-  if (type.includes('text') || type.includes('plain')) return 'https://img.icons8.com/color/24/000000/txt.png';
-  if (type.includes('audio')) return 'https://img.icons8.com/color/24/000000/audio-file.png';
-  if (type.includes('video')) return 'https://img.icons8.com/color/24/000000/video-file.png';
-  if (type.includes('javascript')) return 'https://img.icons8.com/color/24/000000/javascript.png';
-  if (type.includes('json')) return 'https://img.icons8.com/color/24/000000/json.png';
-  if (type.includes('html')) return 'https://img.icons8.com/color/24/000000/html-file.png';
-  if (type.includes('css')) return 'https://img.icons8.com/color/24/000000/css-file.png';
-
-  return 'https://img.icons8.com/color/24/000000/file.png';
-}
-
-function openFile(fileId) {
-  const file = filesData[fileId];
-  if (!file) return;
-
-  // Для изображений, PDF и текстовых файлов открываем в новой вкладке
-  if (file.type.includes('image') || file.type.includes('pdf') || file.type.includes('text')) {
-    window.open(file.content, '_blank');
+  const user = getCurrentUser();
+  if (!user) {
+    alert('Необходимо войти в систему');
+    return;
   }
-  // Для других типов файлов предлагаем скачать
-  else {
-    const a = document.createElement('a');
-    a.href = file.content;
-    a.download = file.name;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+
+  if (!confirm('Удалить этот файл?')) return;
+
+  try {
+    const response = await fetch(`/api/documents/${fileId}`, {
+      method: 'DELETE',
+      headers: { 'X-User': JSON.stringify(user) }
+    });
+
+    const data = await response.json();
+    if (data.success) {
+      await updateAllFilesTable();
+      alert('Файл успешно удален!');
+    } else {
+      alert('Ошибка удаления файла: ' + (data.error || ''));
+    }
+  } catch (error) {
+    console.error('Ошибка:', error);
+    alert('Ошибка удаления файла');
   }
 }
 
-function deleteFile(fileId, event) {
-  event.stopPropagation();
-  const file = filesData[fileId];
-  if (!file) return;
+async function openFile(fileId) {
+    console.log('Попытка открыть файл с ID:', fileId);
 
-  if (confirm(`Удалить файл "${file.name}"?`)) {
-    // Если файл в папке, удаляем его из папки
-    if (file.parentFolder) {
-      const folder = foldersData[file.parentFolder];
-      if (folder && folder.files) {
-        folder.files = folder.files.filter(id => id !== fileId);
-        folder.modified = new Date().toLocaleString();
-      }
+    const user = getCurrentUser();
+    if (!user) {
+        alert('Необходимо войти в систему');
+        return;
     }
 
-    // Удаляем сам файл
-    delete filesData[fileId];
+    // Используем ту же логику, что и в openFolderFile
+    fetch(`/api/documents/${fileId}`, {
+        headers: {
+            'X-User': JSON.stringify(user),
+            'Accept': '*/*'
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-    saveData();
-    updateAllFilesTable();
+        // Получаем blob и открываем файл
+        return response.blob();
+    })
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        window.open(url, '_blank');
 
-    // Если открыто модальное окно папки, обновляем его
-    if (currentFolderId) {
-      openFolderModal(currentFolderId);
+        // Освобождаем URL через некоторое время
+        setTimeout(() => {
+            window.URL.revokeObjectURL(url);
+        }, 1000);
+    })
+    .catch(error => {
+        console.error('Ошибка открытия файла:', error);
+        alert('Ошибка открытия файла: ' + error.message);
+    });
+}
+
+// Скачивание файла
+async function downloadFile(fileId) {
+  const user = getCurrentUser();
+  if (!user) {
+    alert('Необходимо войти в систему');
+    return;
+  }
+
+  try {
+    const response = await fetch(`/api/documents/${fileId}/download`, {
+      headers: { 'X-User': JSON.stringify(user) }
+    });
+
+    if (response.ok) {
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = ''; // Имя файла будет взято из заголовка Content-Disposition
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } else {
+      const data = await response.json();
+      alert('Ошибка скачивания файла: ' + (data.error || 'Неизвестная ошибка'));
     }
+  } catch (error) {
+    console.error('Ошибка скачивания файла:', error);
+    alert('Ошибка скачивания файла');
   }
 }
 
-let currentFolderId = null;
+// ============ ОБЩИЕ ПАПКИ ============
 
-function sendInvite(event) {
-  event.preventDefault();
-  const email = document.getElementById("email").value;
-  const text = document.getElementById("text").value;
-  alert(`Приглашение отправлено на ${email}\nКомментарий: ${text}`);
-  show('none');
+// Создание общей папки
+async function createSharedFolder() {
+    const folderName = prompt("Введите название общей папки:");
+    if (!folderName) return;
+
+    console.log("Отправка запроса на создание папки:", folderName);
+
+    try {
+        const response = await fetch('/api/shared-folders', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-User': JSON.stringify(getCurrentUser())
+            },
+            body: JSON.stringify({ name: folderName })
+        });
+
+        const data = await response.json();
+        console.log("Ответ от сервера:", data);
+
+        if (data.success) {
+            alert(`Общая папка "${folderName}" создана!`);
+            await loadSharedFolders(); // Перезагрузка списка папок
+        } else {
+            alert('Ошибка создания папки: ' + (data.error || ''));
+        }
+    } catch (error) {
+        console.error('Ошибка при создании папки:', error);
+        alert('Произошла ошибка при создании папки.');
+    }
 }
 
+// Загрузка списка общих папок
+async function loadSharedFolders() {
+    console.log("Загрузка списка общих папок...");
+
+    try {
+        const response = await fetch('/api/shared-folders', {
+            headers: { 'X-User': JSON.stringify(getCurrentUser()) }
+        });
+
+        const data = await response.json();
+        console.log("Полученные данные от сервера:", data);
+
+        if (data.success) {
+            renderSharedFolders(data.folders);
+        } else {
+            alert('Ошибка загрузки общих папок: ' + (data.error || ''));
+        }
+    } catch (error) {
+        console.error('Ошибка при загрузке списка папок:', error);
+        alert('Произошла ошибка при загрузке списка папок.');
+    }
+}
+
+// Отображение списка общих папок
+function renderSharedFolders(folders) {
+    const container = document.getElementById('sharedFolderList');
+    if (!container) {
+        console.error('Элемент sharedFolderList не найден в DOM');
+        return;
+    }
+
+    console.log("Отображаем папки:", folders);
+
+    container.innerHTML = ''; // Очистка контейнера
+
+    folders.forEach(folder => {
+        const div = document.createElement('div');
+        div.className = 'folder-item'; // Используем общий класс folder-item
+
+        const folderName = document.createElement('span');
+        folderName.textContent = folder.name;
+        folderName.style.cursor = 'pointer';
+        folderName.onclick = () => openSharedFolder(folder.id, folder.name);
+
+        const inviteBtn = document.createElement('button');
+        inviteBtn.textContent = 'Пригласить';
+        inviteBtn.onclick = () => inviteToSharedFolder(folder.id);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Удалить';
+        deleteBtn.onclick = () => deleteSharedFolder(folder.id);
+
+        div.appendChild(folderName);
+        div.appendChild(inviteBtn);
+        div.appendChild(deleteBtn);
+        container.appendChild(div);
+    });
+}
+
+// Приглашение пользователя в общую папку
+async function inviteToSharedFolder(folderId) {
+    const email = prompt('Введите email пользователя для приглашения:');
+    if (!email) return;
+
+    try {
+        const response = await fetch(`/api/shared-folders/${folderId}/invite`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-User': JSON.stringify(getCurrentUser())
+            },
+            body: JSON.stringify({ email })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert(`Пользователь ${email} приглашен в папку!`);
+        } else {
+            alert('Ошибка приглашения: ' + (data.error || ''));
+        }
+    } catch (error) {
+        console.error('Ошибка при приглашении пользователя:', error);
+        alert('Произошла ошибка при приглашении пользователя.');
+    }
+}
+
+// Открытие модального окна с содержимым папки
+async function openSharedFolder(folderId, folderName) {
+    const modal = document.getElementById('folderModal');
+    const modalTitle = document.getElementById('modalFolderTitle');
+    const modalBody = document.getElementById('modalFolderBody');
+
+    modalTitle.textContent = `Содержимое папки: ${folderName}`;
+    modalBody.innerHTML = `
+        <div>
+            <form id="uploadFileForm" enctype="multipart/form-data">
+                <input type="file" id="fileInput" name="file" />
+                <button type="button" onclick="uploadFileToFolder(${folderId})">Загрузить файл</button>
+            </form>
+        </div>
+        <div id="fileList">Загрузка...</div>
+    `;
+
+    try {
+        const response = await fetch(`/api/shared-folders/${folderId}/files`, {
+            headers: { 'X-User': JSON.stringify(getCurrentUser()) }
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            renderFolderContents(data.files);
+        } else {
+            document.getElementById('fileList').innerHTML = `<p>Ошибка загрузки содержимого: ${data.error || 'Неизвестная ошибка'}</p>`;
+        }
+    } catch (error) {
+        console.error('Ошибка при загрузке содержимого папки:', error);
+        document.getElementById('fileList').innerHTML = '<p>Ошибка загрузки содержимого папки.</p>';
+    }
+
+    modal.style.display = 'block';
+}
+
+// Закрытие модального окна
+function closeFolderModal() {
+    document.getElementById('folderModal').style.display = 'none';
+    document.getElementById('folderModal').setAttribute('aria-hidden', 'true');
+}
+
+// Открытие модального окна для создания папки
+function openFolderModal() {
+    document.getElementById('folderModal').style.display = 'flex';
+    document.getElementById('folderModal').setAttribute('aria-hidden', 'false');
+}
+
+function openSharedFolderModal() {
+    document.getElementById('sharedFolderModal').style.display = 'flex';
+    document.getElementById('sharedFolderModal').setAttribute('aria-hidden', 'false');
+}
+
+// Закрытие модального окна для создания папки
+function closeSharedFolderModal() {
+    document.getElementById('sharedFolderModal').style.display = 'none';
+    document.getElementById('sharedFolderModal').setAttribute('aria-hidden', 'true');
+}
+
+// Отображение содержимого папки
+function renderFolderContents(files) {
+    const fileList = document.getElementById('fileList');
+    fileList.innerHTML = ''; // Очищаем содержимое
+
+    if (!Array.isArray(files) || files.length === 0) {
+        fileList.innerHTML = '<p>Папка пуста.</p>';
+        return;
+    }
+
+    files.forEach(file => {
+        const fileDiv = document.createElement('div');
+        fileDiv.className = 'file-item';
+        fileDiv.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid #ccc; margin: 5px 0; border-radius: 5px;';
+
+        const fileName = document.createElement('span');
+        fileName.textContent = file.name;
+        fileName.style.cursor = 'pointer';
+        fileName.style.color = '#007bff';
+        fileName.onclick = () => openSharedFile(file.id); // Используем специальную функцию для общих папок
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = 'Удалить';
+        deleteBtn.style.cssText = 'background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;';
+        deleteBtn.onclick = () => deleteSharedFile(file.id);
+
+        fileDiv.appendChild(fileName);
+        fileDiv.appendChild(deleteBtn);
+        fileList.appendChild(fileDiv);
+    });
+}
+
+// ИСПРАВЛЕННАЯ функция для открытия файла из общей папки
+function openSharedFile(fileId) {
+    const user = getCurrentUser();
+    if (!user) {
+        alert('Необходимо войти в систему');
+        return;
+    }
+
+    console.log('Открываем файл из общей папки:', fileId);
+
+    // ИСПОЛЬЗУЕМ ПРАВИЛЬНЫЙ URL для файлов из общих папок
+    fetch(`/api/shared-folder-files/${fileId}`, {
+        headers: {
+            'X-User': JSON.stringify(user),
+            'Accept': '*/*'
+        }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Создаём URL для файла и открываем его в новой вкладке
+            return response.blob();
+        })
+        .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            window.open(url, '_blank');
+
+            // Освобождаем URL через некоторое время
+            setTimeout(() => {
+                window.URL.revokeObjectURL(url);
+            }, 1000);
+        })
+        .catch(error => {
+            console.error('Ошибка открытия файла:', error);
+            alert('Ошибка открытия файла: ' + error.message);
+        });
+}
+
+// ИСПРАВЛЕННАЯ функция для удаления файла из общей папки
+async function deleteSharedFile(fileId) {
+    if (!confirm('Удалить этот файл?')) return;
+
+    const user = getCurrentUser();
+    if (!user) {
+        alert('Необходимо войти в систему');
+        return;
+    }
+
+    try {
+        // ИСПОЛЬЗУЕМ ПРАВИЛЬНЫЙ URL для удаления файлов из общих папок
+        const response = await fetch(`/api/shared-folder-files/${fileId}`, {
+            method: 'DELETE',
+            headers: { 'X-User': JSON.stringify(user) }
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert('Файл успешно удален!');
+            // Перезагружаем текущую папку
+            location.reload();
+        } else {
+            alert('Ошибка удаления файла: ' + (data.error || ''));
+        }
+    } catch (error) {
+        console.error('Ошибка:', error);
+        alert('Ошибка удаления файла');
+    }
+}
+
+// Удаление общей папки
+async function deleteSharedFolder(folderId) {
+    if (!confirm('Вы уверены, что хотите удалить эту папку?')) return;
+
+    try {
+        const response = await fetch(`/api/shared-folders/${folderId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-User': JSON.stringify(getCurrentUser())
+            }
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert('Папка успешно удалена!');
+            await loadSharedFolders(); // Перезагрузка списка папок
+        } else {
+            alert('Ошибка удаления папки: ' + (data.error || ''));
+        }
+    } catch (error) {
+        console.error('Ошибка при удалении папки:', error);
+        alert('Произошла ошибка при удалении папки.');
+    }
+}
+
+// Загрузка файла в общую папку
+async function uploadFileToFolder(folderId) {
+    const fileInput = document.getElementById('fileInput');
+    if (!fileInput || !fileInput.files.length) {
+        alert('Выберите файл для загрузки.');
+        return;
+    }
+
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const response = await fetch(`/api/shared-folders/${folderId}/files`, {
+            method: 'POST',
+            headers: {
+                'X-User': JSON.stringify(getCurrentUser())
+            },
+            body: formData
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert('Файл успешно загружен!');
+            // Обновляем список файлов в папке
+            const folderName = document.getElementById('modalFolderTitle').textContent.replace('Содержимое папки: ', '');
+            await openSharedFolder(folderId, folderName);
+        } else {
+            alert('Ошибка загрузки файла: ' + (data.error || ''));
+        }
+    } catch (error) {
+        console.error('Ошибка загрузки файла:', error);
+        alert('Ошибка загрузки файла');
+    }
+}
+
+// Drag and Drop
+const dropArea = document.getElementById('drop-area');
+if (dropArea) {
+  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, preventDefaults, false);
+  });
+  ['dragenter', 'dragover'].forEach(eventName => {
+    dropArea.addEventListener(eventName, highlight, false);
+  });
+  ['dragleave', 'drop'].forEach(eventName => {
+    dropArea.addEventListener(eventName, unhighlight, false);
+  });
+  dropArea.addEventListener('drop', handleDrop, false);
+}
+
+function preventDefaults(e) {
+  e.preventDefault();
+  e.stopPropagation();
+}
+
+function highlight() {
+  if (dropArea) dropArea.classList.add('highlight');
+}
+
+function unhighlight() {
+  if (dropArea) dropArea.classList.remove('highlight');
+}
+
+async function handleDrop(e) {
+  const dt = e.dataTransfer;
+  const files = dt.files;
+  for (let i = 0; i < files.length; i++) {
+    await uploadFile(files[i]);
+  }
+}
+
+// Темная тема
 function toggleTheme() {
   document.body.classList.toggle('dark-theme');
   localStorage.setItem('theme', document.body.classList.contains('dark-theme') ? 'dark' : 'light');
 }
 
-function toggleStar(element) {
-  element.textContent = element.textContent === '☆' ? '★' : '☆';
-  element.style.color = element.textContent === '★' ? 'gold' : 'inherit';
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  // Load theme
+// Инициализация при загрузке страницы
+window.addEventListener('DOMContentLoaded', async () => {
   const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'dark') {
-    document.body.classList.add('dark-theme');
+  if (savedTheme === 'dark') document.body.classList.add('dark-theme');
+
+  const user = getCurrentUser();
+  if (user && document.getElementById('username')) {
+    document.getElementById('username').innerText = user.name;
   }
 
-  // Load profile
-  const profile = JSON.parse(localStorage.getItem('userProfile')) || {};
-  if (profile.username) document.getElementById('username').innerText = profile.username;
-  if (profile.bio) document.getElementById('bio').innerText = profile.bio;
-  if (profile.avatar) document.getElementById('avatar').src = profile.avatar;
-
-  // Load data
-  loadData();
+  await updateAllFilesTable();
+  await loadSharedFolders();
 });
 
-// Avatar upload handler
-document.getElementById('avatar-upload').addEventListener('change', function (e) {
-  const file = e.target.files[0];
-  if (!file) return;
+// Загрузка общих папок при загрузке страницы
+window.addEventListener('DOMContentLoaded', loadSharedFolders);
 
-  const reader = new FileReader();
-  reader.onload = function (event) {
-    const dataUrl = event.target.result;
-    document.getElementById('avatar').src = dataUrl;
+// ============ ГЛОБАЛЬНЫЕ ФУНКЦИИ ============
 
-    // Save to localStorage
-    const profile = JSON.parse(localStorage.getItem('userProfile')) || {};
-    profile.avatar = dataUrl;
-    localStorage.setItem('userProfile', JSON.stringify(profile));
-  };
-  reader.readAsDataURL(file);
-});
-
-// Click avatar to upload
-document.getElementById('avatar').addEventListener('click', function () {
-  document.getElementById('avatar-upload').click();
-});
-
-// Закрытие модальных окон при клике вне их
-window.addEventListener('click', function(event) {
-  if (event.target === document.getElementById('filter')) {
-    show('none');
-    closeFolderModal();
+window.addRealFile = function addRealFile(input) {
+  if (input && input.files && input.files[0]) {
+    uploadFile(input.files[0]);
+    input.value = '';
   }
-});
+};
 
-// Обработчик загрузки целой папки
-document.getElementById('folder-upload').addEventListener('change', function(e) {
-  const files = e.target.files;
-  if (!files.length) return;
+window.toggleStar = function toggleStar(element, event) {
+  if (event) event.stopPropagation();
+  element.textContent = element.textContent === '☆' ? '⭐' : '☆';
+};
 
-  // Получаем имя папки из первого файла
-  const folderPath = files[0].webkitRelativePath.split('/')[0];
-  const folderName = prompt("Введите имя для новой папки:", folderPath);
+window.openFile = openFile;
+window.deleteFile = deleteFile;
+window.downloadFile = downloadFile;
+window.toggleTheme = toggleTheme;
 
-  if (!folderName) return;
+window.toggleSidebar = function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  if (sidebar) sidebar.classList.toggle('collapsed');
+};
 
-  const folderId = 'folder_' + Date.now();
+window.show = function show(state) {
+  const modal = document.getElementById('modalForm');
+  const filter = document.getElementById('filter');
+  if (modal) modal.style.display = state;
+  if (filter) filter.style.display = state;
+};
 
-  // Создаем папку
-  foldersData[folderId] = {
-    id: folderId,
-    name: folderName,
-    files: [],
-    type: 'folder',
-    modified: new Date().toLocaleString()
-  };
+// Сортировка файлов
+window.sortFiles = async function sortFiles(criteria, element) {
+  const sortIcons = document.querySelectorAll('.sort-icon');
+  sortIcons.forEach(icon => icon.classList.remove('active'));
+  element.classList.add('active');
 
-  // Проверка на размер файлов
-  const maxSize = 50 * 1024 * 1024; // 50MB
-  let hasLargeFiles = false;
-
-  for (let file of files) {
-    if (file.size > maxSize) {
-      hasLargeFiles = true;
-      break;
+  const files = await loadFiles();
+  files.sort((a, b) => {
+    if (criteria === 'name') {
+      return a.name.localeCompare(b.name);
+    } else if (criteria === 'date') {
+      return new Date(a.created_at) - new Date(b.created_at);
+    } else if (criteria === 'size') {
+      return (a.size || 0) - (b.size || 0);
     }
-  }
+  });
 
-  if (hasLargeFiles) {
-    if (!confirm('Некоторые файлы превышают 50MB. Продолжить загрузку (большие файлы будут пропущены)?')) {
-      return;
-    }
-  }
+  renderFiles(files);
+};
 
-  // Добавляем файлы в папку
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
+function renderFiles(files) {
+  const tableBody = document.getElementById('all-files-table');
+  if (!tableBody) return;
 
-    // Пропускаем большие файлы
-    if (file.size > maxSize) continue;
-
-    const fileId = 'file_' + Date.now() + '_' + i;
-
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      filesData[fileId] = {
-        id: fileId,
-        name: file.name,
-        size: file.size,
-        type: file.type || 'application/octet-stream',
-        modified: new Date().toLocaleString(),
-        content: e.target.result,
-        parentFolder: folderId
-      };
-
-      foldersData[folderId].files.push(fileId);
-      foldersData[folderId].modified = new Date().toLocaleString();
-
-      saveData();
-      updateAllFilesTable();
-    };
-    reader.onerror = function() {
-      alert(`Ошибка при чтении файла ${file.name}`);
-    };
-    reader.readAsDataURL(file);
-  }
-});
-
-
-const dropArea = document.getElementById('drop-area');
-
-// Предотвращаем поведение по умолчанию (например, открытие файла в браузере)
-['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-  dropArea.addEventListener(eventName, (e) => e.preventDefault(), false);
-  dropArea.addEventListener(eventName, (e) => e.stopPropagation(), false);
-});
-
-// Подсветка области при перетаскивании
-['dragenter', 'dragover'].forEach(eventName => {
-  dropArea.addEventListener(eventName, () => {
-    dropArea.classList.add('highlight');
-  }, false);
-});
-['dragleave', 'drop'].forEach(eventName => {
-  dropArea.addEventListener(eventName, () => {
-    dropArea.classList.remove('highlight');
-  }, false);
-});
-
-// Обработка сброшенных файлов
-dropArea.addEventListener('drop', (e) => {
-  const dt = e.dataTransfer;
-  const files = dt.files;
-  handleDropFiles(files);
-});
-
-function handleDropFiles(files) {
-  // Проверка на размер файлов
-  const maxSize = 50 * 1024 * 1024; // 50MB
-  let hasLargeFiles = false;
-
-  for (let file of files) {
-    if (file.size > maxSize) {
-      hasLargeFiles = true;
-      break;
-    }
-  }
-
-  if (hasLargeFiles) {
-    if (!confirm('Некоторые файлы превышают 50MB. Продолжить загрузку (большие файлы будут пропущены)?')) {
-      return;
-    }
-  }
-
-  for (let i = 0; i < files.length; i++) {
-    const file = files[i];
-
-    // Пропускаем большие файлы
-    if (file.size > maxSize) continue;
-
-    const fileId = 'file_' + Date.now() + '_' + i;
-
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      filesData[fileId] = {
-        id: fileId,
-        name: file.name,
-        size: file.size,
-        type: file.type || 'application/octet-stream',
-        modified: new Date().toLocaleString(),
-        content: e.target.result
-      };
-
-      saveData();
-      updateAllFilesTable();
-    };
-    reader.onerror = function() {
-      alert(`Ошибка при чтении файла ${file.name}`);
-    };
-    reader.readAsDataURL(file);
-  }
+  tableBody.innerHTML = '';
+  files.forEach(file => {
+    const tr = document.createElement('tr');
+    tr.onclick = () => openFile(file.id);
+    tr.innerHTML = `
+      <td>
+        <span class="material-symbols-rounded">description</span>
+        ${file.name}
+      </td>
+      <td>
+        <span class="star" onclick="toggleStar(this, event)">☆</span>
+      </td>
+      <td>Только вы</td>
+      <td>${file.created_at ? new Date(file.created_at).toLocaleString() : ''}</td>
+      <td>
+        <button onclick="deleteFile(${file.id}, event)">×</button>
+      </td>
+    `;
+    tableBody.appendChild(tr);
+  });
 }
 
+// Dropdown меню
+document.addEventListener('click', (e) => {
+  if (!e.target.matches('.dropbtn')) {
+    document.querySelectorAll('.dropdown-content').forEach(dc => {
+      dc.style.display = 'none';
+    });
+  }
+});
+
+window.toggleDropdown = function toggleDropdown() {
+  const dropdown = document.querySelector('.dropdown-content');
+  if (dropdown) {
+    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+  }
+};
+
+// Экспортируем функции в глобальную область
+window.createSharedFolder = createSharedFolder;
+window.openSharedFile = openSharedFile;
+window.deleteSharedFile = deleteSharedFile;
+window.uploadFileToFolder = uploadFileToFolder;
+window.closeFolderModal = closeFolderModal;

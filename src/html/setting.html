@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Профиль пользователя</title>
   <link rel="stylesheet" href="../style/setting.css">
+  <script src="/js/profile-sync.js" defer></script>
   <script src="../js/setting.js"></script>
 </head>
 <body>
@@ -70,7 +71,7 @@
           <span class="slider"></span>
         </label>
       </div>
-      <button class="danger-btn" onclick="logout()">Выйти из аккаунта</button>
+      <button class="danger-btn" onclick="logout(index.innerHTML)">Выйти из аккаунта</button>
       <button class="danger-btn" onclick="clearProfile()">Сбросить профиль</button>
     </div>
   </div>

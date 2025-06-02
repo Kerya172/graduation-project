@@ -19,19 +19,24 @@ swiperText.on('slideChange',function(){
 
 })
 
-function show(state) {
-    document.getElementById('modalForm').style.display = state;
-    document.getElementById('filter').style.display = state;
+function show(state, formType = 'register') {
+    if (formType === 'register') {
+        document.getElementById('modalForm').style.display = state;
+        document.getElementById('filter').style.display = state;
+    } else if (formType === 'login') {
+        document.getElementById('modalForm2').style.display = state;
+        document.getElementById('filterEntry').style.display = state;
+    }
 }
 
 
 
 function selectPlan(element) {
-  // Снимаем выделение со всех
-  document.querySelectorAll('.plan').forEach(plan => {
-    plan.classList.remove('selected');
-  });
-  // Выделяем текущий
-  element.classList.add('selected');
+    // Снимаем выделение со всех
+    document.querySelectorAll('.plan').forEach(plan => {
+        plan.classList.remove('selected');
+    });
+    // Выделяем текущий
+    element.classList.add('selected');
 }
 
