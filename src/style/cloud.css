@@ -1,137 +1,152 @@
+/* ===== МИНИМАЛИСТИЧНЫЕ CSS ПЕРЕМЕННЫЕ (доработанные) ===== */
 :root {
-  /* Основные цвета темной темы */
-  --primary-bg: #181a20;
-  --secondary-bg: #23242a;
-  --accent-bg: #292a32;
-  --sidebar-bg: linear-gradient(145deg, #23242a, #1e1f26);
+  /* Темная минималистичная палитра */
+  --bg-primary: #0a0a0a;       /* Основной фон (очень темный) */
+  --bg-secondary: #121212;     /* Вторичный фон (чуть светлее) */
+  --bg-tertiary: #1c1c1c;      /* Третичный фон (для выделения блоков) */
+  --bg-hover: #242424;         /* Фон при наведении */
 
-  /* Цвета текста */
-  --text-primary: #e0e0e0;
-  --text-secondary: #f5f5f5;
-  --text-muted: #a0a0a0;
+  /* Текст */
+  --text-primary: #f5f5f5;     /* Основной текст (слегка от белого для мягкости) */
+  --text-secondary: #a0a0a0;   /* Вторичный текст (светло-серый) */
+  --text-muted: #555555;       /* Приглушенный текст (темно-серый) */
 
-  /* Акцентные цвета */
-  --accent-green: #35c75a;
-  --accent-red: #ff4d4d;
-  --accent-blue: #007bff;
+  /* Акценты */
+  --accent: #e0e0e0;           /* Акцентный цвет (очень светло-серый, для контраста с текстом) */
+  --accent-hover: #f0f0f0;     /* Акцентный цвет при наведении */
+  --border: #2f2f2f;           /* Цвет границ (темно-серый) */
+  --border-light: #282828;     /* Более светлая граница (для внутренних разделителей) */
 
-  /* Переходы и анимации */
-  --transition-fast: 0.2s ease;
-  --transition-normal: 0.3s ease;
-  --transition-slow: 0.5s ease;
+  /* Опасные действия */
+  --danger: #e53935;           /* Красный для опасных действий */
+  --danger-hover: #f44336;     /* Более светлый красный при наведении */
+
+  /* Тени (минимальные или отсутствуют) */
+  --shadow: none; /* Убраны для строгого минимализма */
+
+  /* Переходы */
+  --transition-fast: 0.15s ease; /* Ускоренный переход */
+  --transition-normal: 0.2s ease;
 
   /* Радиусы */
-  --radius-small: 6px;
-  --radius-medium: 10px;
-  --radius-large: 12px;
+  --radius: 3px;               /* Уменьшенный радиус для более строгих углов */
+  --radius-lg: 6px;
 
-  /* Тени */
-  --shadow-small: 0 2px 8px rgba(0, 0, 0, 0.2);
-  --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.3);
-  --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.4);
+  /* Шрифты */
+  --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
 }
-/* Улучшенная типографика */
+
+/* ===== ГЛОБАЛЬНЫЕ СТИЛИ ===== */
+* {
+  box-sizing: border-box;
+  /* Глобальный сброс анимаций и трансформаций для чистоты */
+  animation: none !important;
+  transform: none !important;
+  /* Плавный, но быстрый переход по умолчанию */
+  transition: background-color var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast), opacity var(--transition-fast);
+}
+
 body {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: var(--font);
   font-size: 14px;
-  line-height: 1.6;
-  background: #181a20;
+  line-height: 1.5; /* Улучшение читаемости */
+  background: var(--bg-primary);
+  color: var(--text-primary);
   display: flex;
   height: 100vh;
-  color: #e0e0e0;
-}
-
-/* Улучшенные заголовки */
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  margin: 0 0 16px 0;
-  line-height: 1.3;
-}
-
-h1 { font-size: 2rem; }
-h2 { font-size: 1.5rem; }
-h3 { font-size: 1.25rem; }
-
-/* Улучшенная читаемость текста */
-p {
-  margin: 0 0 12px 0;
-  line-height: 1.5;
-}
-/* Улучшенная типографика */
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 14px;
-  line-height: 1.6;
-  background: #181a20;
-  display: flex;
-  height: 100vh;
-  color: #e0e0e0;
-}
-
-/* --- SIDEBAR --- */
-.sidebar {
-  width: 240px; /* Увеличена ширина для более просторного вида */
-  background: linear-gradient(145deg, #23242a, #1e1f26); /* Градиент для современного вида */
-  color: #f5f5f5;
-  height: 100vh;
-  transition: width 0.3s ease, background 0.3s ease;
   overflow: hidden;
+  -webkit-font-smoothing: antialiased; /* Улучшение рендеринга шрифтов */
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ===== САЙДБАР ===== */
+.sidebar {
+  width: 220px; /* Немного уже для компактности */
+  background: var(--bg-secondary);
+  border-right: 1px solid var(--border);
+  height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 999;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Добавлена тень */
-  border-right: 1px solid #292a32;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  transition: width var(--transition-normal) !important; /* Разрешаем  для ширины */
 }
 
 .sidebar.collapsed {
-  width: 70px; /* Более компактный вид при сворачивании */
+  width: 56px; /* Оптимизировано для иконок */
 }
 
 .sidebar-header {
-  font-size: 20px;
-  padding: 15px;
-  color: #35c75a; /* Яркий акцент для заголовка */
-  border-bottom: 1px solid #292a32;
-  background: linear-gradient(145deg, #23242a, #1e1f26);
-  text-align: center;
-  font-weight: bold;
+  padding: 18px; /* Скорректированные отступы */
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 15px; /* Немного меньше */
+  font-weight: 500;
+  color: var(--text-primary);
+  height: 56px; /* Фиксированная высота */
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 20px; /* Четче иконка */
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius);
+}
+
+.toggle-btn:hover {
+  color: var(--accent);
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding-top: 8px; /* Уменьшенный отступ */
 }
 
 .nav-item {
   display: flex;
   align-items: center;
-  padding: 14px 20px;
+  padding: 12px 18px; /* Скорректированные отступы */
   cursor: pointer;
-  transition: background 0.3s, color 0.3s, transform 0.2s;
-  color: #f5f5f5;
-  border-radius: 10px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  border-left: 3px solid transparent; /* Индикатор активного элемента */
 }
 
 .nav-item:hover {
-  background: linear-gradient(145deg, #2a2b33, #232e3c); /* Градиент при наведении */
-  color: #35c75a;
-  transform: scale(1.05); /* Легкое увеличение при наведении */
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.nav-item.active { /* Добавлено активное состояние */
+  background: var(--bg-tertiary);
+  color: var(--accent);
+  font-weight: 500;
+  border-left-color: var(--accent);
 }
 
 .nav-icon {
-  font-size: 24px;
-  margin-right: 15px;
-  color: #35c75a; /* Яркий акцент для иконок */
+  font-size: 18px; /* Немного меньше */
+  margin-right: 14px; /* Скорректированный отступ */
+  min-width: 18px;
+  line-height: 1; /* Для точного выравнивания */
 }
 
 .nav-label {
   white-space: nowrap;
-  transition: opacity 0.3s, transform 0.3s;
-  color: #f5f5f5;
+  opacity: 1;
+  transition: opacity var(--transition-fast) !important; /* Разрешаем transition */
 }
 
 .sidebar.collapsed .nav-label {
   opacity: 0;
-  pointer-events: none;
-  transform: translateX(-10px); /* Скрытие текста при сворачивании */
 }
 
 .nav-link {
@@ -139,755 +154,513 @@ body {
   color: inherit;
   display: flex;
   align-items: center;
-  gap: 10px;
+  width: 100%;
 }
 
-.toggle-btn {
-  background: none;
-  border: none;
-  color: #f5f5f5;
-  font-size: 24px;
-  padding: 15px;
-  cursor: pointer;
-  transition: transform 0.3s;
-}
-
-.toggle-btn:hover {
-  transform: rotate(90deg); /* Анимация вращения при наведении */
-}
-
-/* --- MAIN CONTENT --- */
+/* ===== ОСНОВНОЙ КОНТЕНТ ===== */
 .main-container {
-  margin-left: 220px;
-  flex-grow: 1;
+  margin-left: 220px; /* Соответствует ширине сайдбара */
+  flex: 1;
+  background: var(--bg-primary);
+  overflow-y: auto;
   padding: 20px;
-  color: #e0e0e0;
-  background: #181a20;
-  transition: margin-left 0.3s ease;
+  transition: margin-left var(--transition-normal) !important; /* Разрешаем transition */
 }
 
 .sidebar.collapsed ~ .main-container {
-  margin-left: 60px;
+  margin-left: 56px; /* Соответствует свернутому сайдбару */
 }
 
-/* --- SEARCH --- */
-.search-container {
+/* ===== ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ ===== */
+.profile-container {
+  position: absolute;
+  top: 14px; /* Выровнено с шапкой сайдбара */
+  right: 20px;
+  background: var(--bg-secondary);
+  padding: 8px 12px; /* Компактнее */
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 20px;
+  z-index: 999;
 }
 
-.search {
-  width: 350px;
-  height: 30px;
-  border-radius: 12px;
-  border: 1px solid #292a32;
-  padding-left: 10px;
-  font-size: 14px;
-  background: #23242a;
-  color: #e0e0e0;
-  outline: none;
-}
-
-.search-btn {
-  --button-color: #35c75a;
-  padding: 10px 30px;
-  font-size: 15.5px;
-  border-radius: 10px;
-  background-color: transparent;
-  border: 1px solid var(--button-color);
-  color: #35c75a;
+.avatar {
+  width: 28px; /* Уменьшен размер */
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
   cursor: pointer;
-  width: fit-content;
-  justify-content: center;
-  text-transform: uppercase;
-  transition: background 0.2s, color 0.2s;
 }
 
-.search-btn:hover {
-  background-color: #35c75a;
-  color: #181a20;
+#username {
+  font-size: 13px; /* Уменьшен размер */
+  font-weight: 500;
+  color: var(--text-primary);
+  margin: 0;
 }
 
+/* ===== КНОПКИ ===== */
 .button-invite {
-  margin-left: 980px;
-  --button-color: #ff4d4d;
-  padding: 10px 30px;
-  font-size: 15.5px;
-  border-radius: 10px;
-  background-color: transparent;
-  border: 1px solid var(--button-color);
-  color: #ff4d4d;
+  position: absolute;
+  top: 14px;
+  right: 160px; /* Скорректировано положение */
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  padding: 7px 14px; /* Компактнее */
+  border-radius: var(--radius);
+  font-size: 13px;
   cursor: pointer;
-  width: fit-content;
-  justify-content: center;
-  text-transform: uppercase;
-  margin-bottom: 20px;
-  transition: background 0.2s, color 0.2s;
-}
-.button-invite:hover {
-  background-color: #ff4d4d;
-  color: #fff;
 }
 
-/* --- CONTROLS --- */
+.button-invite:hover {
+  background: var(--bg-hover);
+  border-color: var(--accent);
+}
+
 .controls {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 10px; /* Уменьшен отступ */
+  margin: 56px 0 20px 0; /* Отступ от шапки */
+  flex-wrap: wrap;
 }
 
 .button-file,
 .upload-btn,
 .dropbtn {
-  --button-color: #35c75a;
-  padding: 10px 30px;
-  font-size: 15.5px;
-  border-radius: 10px;
-  background-color: transparent;
-  border: 1px solid var(--button-color);
-  color: #35c75a;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  padding: 8px 14px; /* Скорректировано */
+  border-radius: var(--radius);
+  font-size: 13px;
   cursor: pointer;
-  width: fit-content;
-  justify-content: center;
-  text-transform: uppercase;
-  transition: background 0.2s, color 0.2s;
+  font-weight: 400;
 }
 
 .button-file:hover,
 .upload-btn:hover,
 .dropbtn:hover {
-  background-color: #35c75a;
-  color: #181a20;
+  background: var(--bg-hover);
+  border-color: var(--accent);
 }
 
-.upload-btn input {
-  display: none;
-}
-
-/* --- DROPDOWN --- */
+/* ===== ДРОПДАУН ===== */
 .dropdown {
   position: relative;
-  display: inline-block;
 }
 
 .dropdown-content {
   display: none;
   position: absolute;
-  background-color: #23242a;
-  min-width: 200px;
-  box-shadow: 0px 8px 16px rgba(0,0,0,0.3);
-  border-radius: 6px;
-  z-index: 1;
-  margin-top: 5px;
-  border: 1px solid #292a32;
+  top: calc(100% + 4px); /* Небольшой отступ */
+  left: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  z-index: 1000;
+  min-width: 180px; /* Скорректировано */
 }
 
 .dropdown-content a,
 .dropdown-content button {
-  color: #e0e0e0;
-  padding: 10px;
   display: block;
-  background: none;
+  padding: 10px 14px; /* Скорректировано */
+  text-decoration: none;
+  color: var(--text-secondary);
   border: none;
+  background: none;
   width: 100%;
   text-align: left;
   cursor: pointer;
-  font-size: 16px;
-  transition: background 0.2s, color 0.2s;
+  font-size: 13px;
 }
 
 .dropdown-content a:hover,
 .dropdown-content button:hover {
-  background-color: #232e3c;
-  color: #35c75a;
+  background: var(--bg-hover);
+  color: var(--text-primary);
 }
 
-/* --- MODAL FORMS --- */
-#modalForm {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #23242a;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
-  z-index: 1001;
-  width: 550px;
-  max-width: 90%;
-  color: #e0e0e0;
-}
-
-#filter {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  background: rgba(0, 0, 0, 0.4);
-  z-index: 1000;
-}
-
-.group {
-  margin-bottom: 13px;
-}
-
-.group input {
-  width: 100%;
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #292a32;
-  font-size: 14px;
-  background: #181a20;
-  color: #e0e0e0;
-  outline: none;
-}
-
-.group.buttons {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-button {
-  background-color: #35c75a;
-  color: #fff;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s ease;
-}
-
-.ok-btn:hover {
-  background-color: #2d8758;
-}
-
-.cancel-btn {
-  background-color: #23242a;
-  color: #e0e0e0;
-}
-
-.cancel-btn:hover {
-  background-color: #292a32;
-}
-
-/* --- FOLDER MODAL --- */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 0.3s ease-out;
-}
-
-.modal-content h2 {
-  margin-top: 0;
-}
-
-.btn-close {
-  background: none;
-  border: none;
-  font-size: 1.5rem;
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
-}
-
-.btn-primary {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
-}
-
-.file-label {
-  display: block;
-  margin-bottom: 10px;
-}
-
-.file-list {
-  margin-top: 20px;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* --- FOLDERS AND FILES --- */
-.content {
-  background: #181a20;
-  color: #e0e0e0;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  width: 100%;
-}
-
-.folder, .file {
-  background: #23242a;
-  padding: 15px;
-  border-radius: 10px;
-}
-
-.folder h2, .file h2 {
-  font-size: 18px;
-  color: #e0e0e0;
-  text-align: center;
-}
-
-.folder-item, .file-item {
-  padding: 8px;
-  margin: 5px 0;
-  background: #23242a;
-  border-radius: 4px;
-  cursor: pointer;
-  color: #e0e0e0;
-  border: 1px solid #292a32;
-  transition: background 0.2s, color 0.2s;
-}
-
-.folder-item:hover, .file-item:hover {
-  background: #232e3c;
-  color: #35c75a;
-}
-
-.folder-item {
-  display: flex;
-  justify-content: space-between; /* Разделяет содержимое на две стороны */
-  align-items: center;
-  padding: 15px;
-  border: 1px solid #292a32;
-  border-radius: 10px;
-  background: #23242a;
-  transition: background 0.3s, border-color 0.3s, transform 0.2s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Легкая тень */
-}
-
-.folder-item:hover {
-  background: #2a2b33;
-  border-color: #35c75a;
-  transform: scale(1.03); /* Легкое увеличение при наведении */
-}
-
-.folder-item span {
-  font-size: 16px;
-  color: #e0e0e0;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.folder-item span:hover {
-  color: #35c75a; /* Цвет при наведении */
-}
-
-.folder-item button {
-  background-color: #35c75a;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s, transform 0.2s;
-}
-
-.folder-item button:hover {
-  background-color: #2d8758;
-  transform: scale(1.1); /* Увеличение кнопки при наведении */
-}
-
-.folder-item div {
-  display: flex;
-  gap: 10px; /* Расстояние между кнопками */
-  margin-left: auto; /* Перемещает кнопки вправо */
-}
-
+/* ===== DRAG & DROP ОБЛАСТЬ ===== */
 #drop-area {
-  border: 2px dashed #292a32;
-  border-radius: 10px;
-  padding: 20px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 30px; /* Уменьшено */
   text-align: center;
-  color: #e0e0e0;
+  color: var(--text-secondary);
   margin-bottom: 20px;
-  background: #23242a;
+  background: var(--bg-secondary);
 }
 
 #drop-area.highlight {
-  border-color: #35c75a;
-  background-color: #232e3c;
+  border-color: var(--accent);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
-/* --- THEME TOGGLE --- */
-.theme-toggle {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #23242a;
-  color: #35c75a;
-  font-size: 1.2em;
-  border: none;
-  cursor: pointer;
-  z-index: 999;
-  border-radius: 8px;
-  padding: 8px 14px;
-  transition: background 0.2s, color 0.2s;
-}
-
-.theme-toggle:hover {
-  background: #35c75a;
-  color: #181a20;
-}
-
-/* --- PROFILE --- */
-.profile-container {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #23242a;
-  padding: 7px 15px;
-  border-radius: 14px;
-  box-shadow: 0 2px 12px rgba(34, 40, 126, 0.10);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: fit-content;
-  min-width: 160px;
-  max-width: 320px;
-  border: 1px solid #292a32;
-  transition: box-shadow 0.2s, border 0.2s;
-  z-index: 1000; /* Чтобы блок был поверх других элементов */
-}
-
-.profile-container:hover {
-  box-shadow: 0 4px 24px rgba(53,199,90,0.10);
-  border: 1.5px solid #35c75a;
-}
-
-.avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #292a32;
-  transition: border 0.2s, transform 0.2s;
-  margin-right: 0;
-}
-
-.avatar:hover {
-  border: 2px solid #35c75a;
-  transform: scale(1.06);
-}
-
-#username {
-  font-size: 16px;
-  color: #e0e0e0;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* --- TABLE --- */
+/* ===== ТАБЛИЦА ФАЙЛОВ ===== */
 .file-table {
   width: 100%;
-  border-collapse: collapse;
-  background: #23242a;
-  color: #e0e0e0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border-collapse: collapse; /* Убираем двойные границы */
 }
 
 .file-table thead {
-  background-color: #232e3c;
+  background: var(--bg-tertiary);
 }
 
-.file-table th,
-.file-table td {
-  cursor: pointer;
-  padding: 12px 16px;
-  border-bottom: 1px solid #292a32;
+.file-table th {
+  padding: 12px 14px; /* Скорректировано */
+  font-weight: 500;
   text-align: left;
+  border-bottom: 1px solid var(--border); /* Четче разделитель */
+  color: var(--text-primary);
+  font-size: 13px;
 }
 
-.file-table tr:hover {
-  background-color: #232e3c;
-}
-
-.icon {
-  width: 20px;
+.file-table td {
+  padding: 10px 14px; /* Скорректировано */
+  border-bottom: 1px solid var(--border-light);
   vertical-align: middle;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.file-table tbody tr:hover {
+  background: var(--bg-hover);
+}
+
+.file-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* ===== ИКОНКИ ===== */
+.material-symbols-rounded { /* Специфично для Material Symbols */
+  font-size: inherit; /* Наследуем размер от родителя для гибкости */
+  color: var(--text-secondary);
   margin-right: 8px;
-  color: #35c75a;
+  vertical-align: middle; /* Лучшее выравнивание */
 }
 
 .star {
+  font-size: 16px;
   cursor: pointer;
-  font-size: 18px;
-  color: #35c75a;
-  transition: color 0.2s;
+  color: var(--text-muted);
 }
-
 .star:hover {
-  color: #fff;
+  color: var(--accent); /* Ярче при наведении */
 }
 
-.back-button {
+/* ===== СОРТИРОВКА ===== */
+.sort-options {
   display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  border: none;
-  background: #23242a;
-  border-radius: 4px;
+  gap: 6px;
+  margin-bottom: 14px;
+  justify-content: flex-end;
+}
+
+.sort-icon {
+  font-size: 16px;
   cursor: pointer;
-  color: #e0e0e0;
-  transition: background 0.2s, color 0.2s;
+  color: var(--text-muted);
+  padding: 5px;
+  border-radius: var(--radius);
+}
+.sort-icon:hover {
+  color: var(--text-primary);
+}
+.sort-icon.active {
+  color: var(--accent);
+  background: var(--bg-tertiary);
 }
 
-.back-button:hover {
-  background: #232e3c;
-  color: #35c75a;
-}
-
-.folder-row {
-  cursor: pointer;
-}
-
-.folder-row:hover {
-  background-color: #232e3c;
-}
-
-#foldersPanel {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  padding: 20px;
-  background: linear-gradient(145deg, #1e1f26, #23242a);
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-#folderModal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  z-index: 1000;
-  backdrop-filter: blur(5px);
-}
-
-.folderModalContent {
-  background: linear-gradient(145deg, #2a2b33, #23242a);
-  margin: 10% auto;
-  padding: 25px;
-  border-radius: 15px;
-  width: 50%;
-  max-width: 600px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-  position: relative;
-  color: #f0f0f0;
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-.btn-close {
-  color: #ff4d4d;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-  background: none;
-  border: none;
-  border-radius: 20%;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.3s, transform 0.2s;
-}
-
-.btn-close:hover {
-  background: #ff4d4d;
-  color: #fff;
-  transform: scale(1.1);
-}
-
-/* --- Общий стиль для "Мои папки" и "Общие папки" --- */
+/* ===== ПАПКИ ===== */
 .folder-section {
   margin-top: 30px;
-  padding: 20px;
-  background: linear-gradient(145deg, #1e1f26, #23242a); /* Градиент для современного вида */
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Глубокая тень */
-  border: 1px solid #292a32;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px;
 }
 
 .folder-section h3 {
-  font-size: 24px;
-  color: #35c75a; /* Яркий акцент для заголовка */
-  margin-bottom: 20px;
-  text-align: center;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-top: 0; /* Убран верхний отступ */
+  margin-bottom: 14px;
 }
 
 .folder-container {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 6px;
 }
 
 .folder-item {
-  display: flex;
-  justify-content: space-between; /* Разделяет содержимое на две стороны */
-  align-items: center;
-  padding: 15px;
-  border: 1px solid #292a32;
-  border-radius: 10px;
-  background: #23242a;
-  transition: background 0.3s, border-color 0.3s, transform 0.2s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Легкая тень */
-}
-
-.folder-item:hover {
-  background: #2a2b33;
-  border-color: #35c75a;
-  transform: scale(1.03); /* Легкое увеличение при наведении */
-}
-
-.folder-item span {
-  font-size: 16px;
-  color: #e0e0e0;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.folder-item span:hover {
-  color: #35c75a; /* Цвет при наведении */
-}
-
-.folder-item button {
-  background-color: #35c75a;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s, transform 0.2s;
-}
-
-.folder-item button:hover {
-  background-color: #2d8758;
-  transform: scale(1.1); /* Увеличение кнопки при наведении */
-}
-
-.folder-item div {
-  display: flex;
-  gap: 10px; /* Расстояние между кнопками */
-  margin-left: auto; /* Перемещает кнопки вправо */
-}
-
-/* Анимация появления модального окна */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.sort-icon {
-  cursor: pointer;
-  color: #ccc; /* Цвет по умолчанию */
-  transition: color 0.3s, transform 0.2s;
-}
-
-.sort-icon:hover {
-  color: #35c75a; /* Цвет при наведении */
-  transform: scale(1.1); /* Легкое увеличение */
-}
-
-.sort-icon.active {
-  color: #35c75a; /* Цвет активной кнопки */
-  font-weight: bold;
-}
-#sharedFolderList{
-  padding: 8px;
-  margin: 5px 0;
-  background: #23242a;
-  border-radius: 4px;
-  cursor: pointer;
-  color: #e0e0e0;
-  border: 1px solid #292a32;
-  transition: background 0.2s, color 0.2s;
-}
-
-#sharedFolderList:hover, #sharedFolderList:hover {
-  background: #232e3c;
-  color: #35c75a;
-}
-
-.shared-folder-item{
+  background: var(--bg-primary); /* Темнее чем фон секции */
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius);
+  padding: 10px 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px;
-  border: 7px solid #ddd;
-  margin: 5px 0;
-  border-radius: 5px;
-  background: #shadow;
 }
-.shared-folder-item, button {
+.folder-item:hover {
+  background: var(--bg-hover);
+  border-color: var(--border);
+}
+.folder-item span {
+  font-size: 13px;
+  color: var(--text-primary);
   cursor: pointer;
-  color: #e0e0e0;
-  border: 1px solid #292a32;
-  transition: background 0.2s, color 0.2s;
 }
-.shared-folder-item:hover:hover {
-  background: #2a2b33;
-  border-color: #35c75a;
-  transform: scale(1.03); /* Легкое увеличение при наведении */
+.folder-item div {
+  display: flex;
+  gap: 6px;
+}
+.folder-item button {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  padding: 4px 8px; /* Компактнее */
+  border-radius: var(--radius);
+  font-size: 11px; /* Очень маленький для иконочных кнопок */
+  cursor: pointer;
+}
+.folder-item button:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+.folder-item button.danger-btn { /* Специальный класс для кнопки удаления */
+  color: var(--danger);
+  border-color: transparent; /* Убрать границу для более чистого вида */
+  background: transparent;
+}
+.folder-item button.danger-btn:hover {
+  color: var(--danger-hover);
+  background: rgba(229, 57, 53, 0.1); /* Легкий фон при наведении */
+}
+
+
+/* ===== МОДАЛЬНЫЕ ОКНА ===== */
+#modalForm,
+#folderModal {
+  display: none; /* Управляется JS */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85); /* Более плотный оверлей */
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+  padding: 20px; /* Отступы для маленьких экранов */
+}
+
+.modal-content, /* Общий класс для содержимого модалки */
+#modalForm > form {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px; /* Уменьшены отступы */
+  max-width: 460px; /* Немного меньше */
+  width: 100%; /* Адаптивность */
+}
+
+.modal-content h2,
+#modalForm > form h2 {
+  color: var(--text-primary);
+  margin-top: 0;
+  margin-bottom: 18px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.group {
+  margin-bottom: 14px;
+}
+.group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+.group input[type="text"],
+.group input[type="email"],
+.group input[type="password"] {
+  width: 100%;
+  padding: 9px 12px; /* Сбалансированные отступы */
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 13px;
+  background: var(--bg-primary); /* Темнее для контраста */
+  color: var(--text-primary);
+}
+.group input[type="text"]:focus,
+.group input[type="email"]:focus,
+.group input[type="password"]:focus {
+  outline: none;
+  border-color: var(--accent);
+  background-color: var(--bg-secondary); /* Слегка осветлить при фокусе */
+}
+
+.group.buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.ok-btn,
+.cancel-btn {
+  padding: 8px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500; /* Четче текст кнопки */
+  cursor: pointer;
+}
+
+.ok-btn {
+  background: var(--accent);
+  color: var(--bg-primary); /* Темный текст на светлом акценте */
+  border-color: var(--accent);
+}
+.ok-btn:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+.cancel-btn {
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+}
+.cancel-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.btn-close { /* Кнопка закрытия модалки */
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 22px; /* Крупнее для удобства */
+  cursor: pointer;
+  color: var(--text-muted);
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+.btn-close:hover {
+  color: var(--danger);
+  background-color: rgba(229, 57, 53, 0.1);
+}
+
+/* ===== ПЕРЕКЛЮЧАТЕЛЬ ТЕМЫ ===== */
+.theme-toggle {
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  font-size: 16px;
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.theme-toggle:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--accent);
+}
+
+/* ===== ФИЛЬТРЫ (оверлей для модалок) ===== */
+#filter {
+  display: none; /* Управляется JS */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7); /* Слегка прозрачнее */
+  z-index: 1500; /* Ниже модалок, выше остального */
+}
+
+
+/* ===== КАСТОМНЫЙ СКРОЛЛБАР ===== */
+::-webkit-scrollbar {
+  width: 6px; /* Тоньше */
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ===== АДАПТИВНОСТЬ ===== */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%) !important; /* Важно для переопределения */
+    transition: transform var(--transition-normal) ease !important;
+  }
+  .sidebar.open { /* JS должен добавлять этот класс */
+    transform: translateX(0) !important;
+  }
+  .main-container {
+    margin-left: 0;
+    padding: 15px; /* Меньше отступы на мобильных */
+  }
+  .profile-container {
+    position: static; /* В потоке документа */
+    margin-bottom: 15px;
+    justify-content: center;
+  }
+  .button-invite {
+    position: static;
+    display: block; /* На всю ширину */
+    width: 100%;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  .controls {
+    margin-top: 0;
+    flex-direction: column; /* Кнопки в столбец */
+  }
+  .controls .button-file,
+  .controls .upload-btn,
+  .controls .dropbtn,
+  .controls .dropdown {
+    width: 100%; /* На всю ширину */
+  }
+  .dropdown-content {
+    width: 100%; /* На всю ширину */
+  }
 }
